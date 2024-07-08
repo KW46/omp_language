@@ -618,7 +618,18 @@ forward OnPlayerSelectedLanguage(playerid);
     #if !defined _INC_y_hooks
         #if defined FILTERSCRIPT
             #if defined OMPLanguage_OnFilterScriptInit
-
+                return OMPLanguage_OnFilterScriptInit();
+            #else
+                return 1;
+            #endif
+        #else
+            #if defined OMPLanguage_OnGameModeInit
+                return OMPLanguage_OnGameModeInit();
+            #else
+                return 1;
+            #endif        
+        #endif
+    #endif
     return 1;
 }
 #if !defined _INC_y_hooks
