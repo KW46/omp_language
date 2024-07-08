@@ -95,6 +95,20 @@ If YSI is not used (or at least if y_dialog and y_inline are not used), the defa
 Since those require a dialog ID, this sets that dialog ID. Only effective if y_dialog or y_inline is not included.  
 Default value if not defined: `(1)`
 
+`LANGUAGE_NO_BUILD_MESSAGE`  
+By default, when the language database is built some messages are printed:
+```
+[Info] ===== Building language database =====
+[Info] Found 2 language(s):
+[Info]    0: (en) English
+[Info]    1: (nl) Nederlands
+[Info] > Adding language files to language database
+[Info] >> Adding data for language "English"...
+[Info] >> Adding data for language "Nederlands"...
+[Info] ===== Language database built =====
+```
+If you don't want that, simply define LANGUAGE_NO_BUILD_MESSAGE
+
 [To index](#how-to-use)
 
 ### Embedded colour names
