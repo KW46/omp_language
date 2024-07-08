@@ -1,0 +1,1 @@
+PLAYER_JOIN	{YELLOW}[JOIN] {GREY}%s(%d) {WHITE}just entered the server!

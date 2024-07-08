@@ -1,0 +1,6 @@
+# Language file used by the omp_language include, used for showing the language selection dialog
+
+DIALOG_TITLE            {WHITE}Please select a language
+DIALOG_BUTTON_SELECT    {WHITE}Select
+DIALOG_BUTTON_CANCEL    {WHITE}Cancel
+MSG_SELECTED_LANGUAGE   {WHITE}Your language has been set to {GREY}%s{WHITE}.

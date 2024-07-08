@@ -1,0 +1,7 @@
+# Required
+openmultiplayer/omp-stdlib
+Y-Less/sscanf:v2.13.8
+Se8870/SA-MP-FileManager:1.5.1 #Originally from JaTochNietDan, this is a const corrected version
+
+# Optional (but highly recommended)
+pawn-lang/YSI-Includes:v5.10.0006
