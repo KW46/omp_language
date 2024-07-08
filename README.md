@@ -50,10 +50,11 @@ Entry in a table/language file that identifies a single string.
 [To main index](#index)
 
 ### Including the language system
-1. Make sure `omp_language.inc` is in your includes directory
-2. Optionally, add `omp_language_colours.inc` to your includes directory (see [Embedded colour names](#embedded-colour-names))
-3. Make sure `scriptfiles/languages` is added to your server files
-4. Include omp_language: `#include <omp_language>`
+1. Make sure you're using open.mp, the provided 3.10.11 compiler and that you have the dependencies listed in `dependencies.txt`
+2. Make sure `omp_language.inc` is in your includes directory
+3. Optionally, add `omp_language_colours.inc` to your includes directory (see [Embedded colour names](#embedded-colour-names))
+4. Make sure `scriptfiles/languages` is added to your server files
+5. Include omp_language: `#include <omp_language>`
 
 That's all! 
 <!> Make sure at least one language exist: This language system doesn't support having no languages added and may cause issues. Pointless anyway to include this language system if you're not using any language
