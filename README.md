@@ -1,6 +1,6 @@
 # omp_language
-Yet another language system.  
-This language system is designed for open.mp - Most of it could be made compatible with SA-MP, except using in-memory SQLite database (unless if there's a plugin I don't know about).
+Yet another multiple languages system.  
+This language system is designed for open.mp - Most of it could be made compatible with SA-MP, except using in-memory SQLite database (unless if there's a plugin I don't know about), but highly discouraged since that would be very slow.
 
 ## Index
 * [Features](#features)
