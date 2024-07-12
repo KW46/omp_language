@@ -145,7 +145,7 @@ To add strings to a language file, simply create an identifier, and then the str
 <!> Empty lines and lines starting with `#` are ignored. As are invalid lines (single words)
 For example:
 ```
-## This file is ignored and thus functions as a comment.
+## This line is ignored and thus functions as a comment.
 # This is the prefered way of adding entries: Identifier fully capitalized, using words and underscores only, identating all strings on the same column (? did I call that right ?)
 MY_IDENTIFIER       This is my identifier!
 HELLO_WORLD         Hello {GREEN}world!
