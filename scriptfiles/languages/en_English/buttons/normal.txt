@@ -1,0 +1,39 @@
+# Positive actions
+BUTTON_ENTER     Enter
+BUTTON_GO        Go
+BUTTON_ACCEPT    Accept
+BUTTON_OK        Ok
+BUTTON_CONTINUE  Continue
+BUTTON_PROCEED   Proceed
+BUTTON_CONFIRM   Confirm
+BUTTON_START     Start
+BUTTON_YES       Yes
+BUTTON_LOGIN     Login
+BUTTON_REGISTER  Register
+BUTTON_NEXT      Next
+BUTTON_JOIN      Join
+
+# Negative actions
+BUTTON_EXIT      Exit
+BUTTON_QUIT      Quit
+BUTTON_CANCEL    Cancel
+BUTTON_BACK      Back
+BUTTON_CLOSE     Close
+BUTTON_STOP      Stop
+BUTTON_NO        No
+BUTTON_LEAVE     Leave
+BUTTON_ABORT     Abort
+BUTTON_REJECT    Reject
+
+# Neutral actions
+BUTTON_SELECT    Select
+BUTTON_CHOOSE    Choose
+BUTTON_SKIP      Skip
+BUTTON_RETRY     Retry
+BUTTON_SUBMIT    Submit
+BUTTON_FINISH    Finish
+BUTTON_EDIT      Edit
+BUTTON_SAVE      Save
+BUTTON_DONE      Done
+BUTTON_RESET     Reset
+BUTTON_UPDATE    Update
