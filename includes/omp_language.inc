@@ -177,9 +177,16 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
 
-        //Strip "\n" at end of line
+        //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
-            strdel(content, strlen(content) - 2, strlen(content));
+        {
+            new len = strlen(content);
+
+            if (content[len] == '\n' && content[len-1] == '\r')
+                strdel(content, len - 2, len);
+            else
+                strdel(content, len - 1, len);
+        }
 
         //Replace colour names with real colours, using variable gLanguageColours
         #if defined gLanguageColours
