@@ -183,9 +183,9 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
             new len = strlen(content);
 
             if (content[len] == '\n' && content[len-1] == '\r')
-                strdel(content, len - 2, len);
+                content[len-2] = EOS;
             else
-                strdel(content, len - 1, len);
+                content[len-1] = EOS;
         }
 
         //Replace colour names with real colours, using variable gLanguageColours
