@@ -108,7 +108,23 @@ By default, when the language database is built some messages are printed:
 [Info] >> Adding data for language "Nederlands"...
 [Info] ===== Language database built =====
 ```
-If you don't want that, simply define LANGUAGE_NO_BUILD_MESSAGE
+If you don't want that, simply define LANGUAGE_NO_BUILD_MESSAGE  
+
+`LANGUAGE_NO_YSI`  
+Define this to prevent inclusion of any YSI include.
+
+`LANGUAGE_NO_YSI_HOOKS`  
+Define this to prevent inclusion of y_hooks.
+
+`LANGUAGE_NO_YSI_VA`  
+Define this to prevent inclusion of y_va.
+
+`LANGUAGE_NO_YSI_FOREACH`  
+Define this to prevent inclusion of y_foreach.
+
+`LANGUAGE_NO_YSI_DIALOG`  
+Define this to prevent inclusion of y_dialog and y_inline.  
+If not defined, omp_language will attempt to include both y_dialog and y_inline.
 
 [To index](#how-to-use)
 
