@@ -162,7 +162,8 @@ Lorem ipsum dolor sit amet
 TEST
 ```
 
-**NOTE**: Make sure that all language directories have the same sub directories and files, and the same identifiers!
+**NOTE**: Make sure that all language directories have the same sub directories and files, and the same identifiers!  
+**NOTE 2**: Since version 1.03, any file extension (or none) is valid. But `.txt` is still preferred and recommended.
 
 [To index](#how-to-use)
 
