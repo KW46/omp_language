@@ -634,9 +634,9 @@ stock void:Player_SelectLanguage(const playerid)
     //Returns: (int) output of GameTextForPlayer(), thus 1: Function executed or 0: Player not connected or string (retrieved from table:identifier) is null
 
     #if defined _INC_y_va
-        return GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style, ___(5));
+        return GameTextForPlayer(playerid, Player_Language_Get(playerid, table, identifier), time, style, ___(5));
     #else
-        return GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style);
+        return GameTextForPlayer(playerid, Player_Language_Get(playerid, table, identifier), time, style);
     #endif
 }
 
@@ -661,9 +661,9 @@ stock void:Player_SelectLanguage(const playerid)
     #endif
     {
         #if defined _INC_y_va
-            GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style, ___(4));
+            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style, ___(4));
         #else
-            GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style);
+            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style);
         #endif
     }
 }
