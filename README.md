@@ -442,7 +442,7 @@ Retrieves a language string for a player. Optionally formats retrieved string (o
 
 ---
 #### SendClientLanguageMessage
-`SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+`bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
 Sends a client message to the player using the language system
 
 **Parameters**  
@@ -453,7 +453,7 @@ Sends a client message to the player using the language system
 `OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
-(int) Output of SendClientMessage(), thus **1**: Message was sent or **0**: Player isn't connected
+(bool) Output of SendClientMessage(), thus **true**: Message was sent or **false**: Player isn't connected
 
 **Notes**  
 None
@@ -465,7 +465,7 @@ None
 
 ---
 #### SendClientLanguageMessageToAll
-`SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+`bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
 Sends a client message to all players, displaying the message in the selected language of each individual player
 
 **Parameters**  
@@ -475,7 +475,7 @@ Sends a client message to all players, displaying the message in the selected la
 `OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
-(int) Output of SendClientMessage(), thus always returns 1
+(bool) Output of SendClientMessage(), thus always returns true
 
 **Notes**  
 <!> If you're not using YSI, and the to-be-sent text has format specifiers, you can't use this function. Instead you'll have to loop through each player and use `SendClientLanguageMessage()` for each player.
