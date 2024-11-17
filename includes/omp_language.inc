@@ -570,9 +570,9 @@ stock void:Player_SelectLanguage(const playerid)
 }
 
 #if defined _INC_y_va
-    stock SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+    stock bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
 #else
-    stock SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[])
+    stock bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[])
 #endif
 {
     //Sends a client message to a player using the language system
@@ -581,7 +581,7 @@ stock void:Player_SelectLanguage(const playerid)
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: (int) Output of SendClientMessage (thus 1: message sent, 0: message not sent, player not connected)    
+    //Returns: (bool) Output of SendClientMessage (thus true: message sent, false: message not sent, player not connected)    
 
     #if defined _INC_y_va
         return SendClientMessage(playerid, colour, Player_Language_Get(playerid, table, identifier, ___(4)));
@@ -591,9 +591,9 @@ stock void:Player_SelectLanguage(const playerid)
 }
 
 #if defined _INC_y_va
-    stock SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+    stock bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
 #else
-    stock SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[])
+    stock bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[])
 #endif
 {
     //Sends a client message to all players using the language system
@@ -601,7 +601,7 @@ stock void:Player_SelectLanguage(const playerid)
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: (int) Always returns 1
+    //Returns: (bool) Always returns true
 
     #if defined _INC_y_iterate
         foreach (new i : Player)
