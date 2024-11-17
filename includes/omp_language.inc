@@ -618,6 +618,56 @@ stock void:Player_SelectLanguage(const playerid)
     return 1;
 }
 
+#if defined _INC_y_va
+    stock bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)
+#else
+    stock bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style)
+#endif
+{
+    //Sends a game text to a player using the language system
+    //  `playerid`: Player to to show the gametext for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `time`: The duration of the text being shown in milliseconds
+    //  `style`: The style of text to be displayed
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: (int) output of GameTextForPlayer(), thus 1: Function executed or 0: Player not connected or string (retrieved from table:identifier) is null
+
+    #if defined _INC_y_va
+        return GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style, ___(5));
+    #else
+        return GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style);
+    #endif
+}
+
+#if defined _INC_y_va
+    stock void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)
+#else
+    stock void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style)
+#endif
+{
+    //Shows a game text to all players using the language system
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `time`: The duration of the text being shown in milliseconds
+    //  `style`: The style of text to be displayed
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Nothing
+
+    #if defined _INC_y_iterate
+        foreach (new i : Player)
+    #else
+        for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
+    #endif
+    {
+        #if defined _INC_y_va
+            GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style, ___(4));
+        #else
+            GameTextForPlayer(playerid, Player_Language_Get(i, table, identifier), time, style);
+        #endif
+    }
+}
+
 /*-- Callbacks --*/
 forward OnPlayerSelectedLanguage(playerid);
 
