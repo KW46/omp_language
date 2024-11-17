@@ -154,7 +154,13 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
 
     format(fullPath, sizeof(fullPath), "languages/%s_%s%s%s/%s", sLanguages[languageId][E_LANG_CODE], sLanguages[languageId][E_LANG_NAME], (IsNull(subDir) ? "" : "/"), subDir, file);
     format(tableName, sizeof(tableName), "%s%s%s", subDir, (IsNull(subDir) ? "" : "-"), file);
-    strdel(tableName, strlen(tableName) - 4, strlen(tableName));
+
+    for (new i = strlen(tableName); i > 0; i--){
+        if (tableName[i] == '.'){
+            strdel(tableName, i, strlen(tableName));
+            break;
+        }
+    }
 
     DB_FreeResultSet(DB_ExecuteQuery(sLanguageDBHandle, "CREATE TABLE IF NOT EXISTS `%s` (lang TINYINT NOT NULL, ident VARCHAR(64) NOT NULL, content VARCHAR(%d) NOT NULL, PRIMARY KEY(lang, ident));", tableName, LANGUAGE_MAX_CONTENT_LENGTH));
 
