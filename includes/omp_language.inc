@@ -1,4 +1,4 @@
-//Include version: 1.01
+//Include version: 1.02
 
 #if defined _INC_omp_language
     #endinput
@@ -9,13 +9,24 @@
 #include <open.mp>
 #include <sscanf2>
 #include <FileManager>
-#tryinclude <YSI_Coding\y_hooks>
-#tryinclude <YSI_Coding\y_va>
-#tryinclude <YSI_Data\y_foreach>
-#tryinclude <YSI_Visual\y_dialog>
 
-#if defined _INC_y_dialog
-    #tryinclude <YSI_Coding\y_inline>
+#if !defined LANGUAGE_NO_YSI
+    #if !defined LANGUAGE_NO_YSI_HOOKS
+        #tryinclude <YSI_Coding\y_hooks>
+    #endif
+    #if !defined LANGUAGE_NO_YSI_VA
+        #tryinclude <YSI_Coding\y_va>
+    #endif
+    #if !defined LANGUAGE_NO_YSI_FOREACH
+        #tryinclude <YSI_Data\y_foreach>
+    #endif
+    #if !defined LANGUAGE_NO_YSI_DIALOG
+        #tryinclude <YSI_Visual\y_dialog>
+
+        #if defined _INC_y_dialog
+            #tryinclude <YSI_Coding\y_inline>
+        #endif
+    #endif
 #endif
 
 #if !defined gLanguageColours

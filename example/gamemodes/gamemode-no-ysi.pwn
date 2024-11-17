@@ -6,6 +6,7 @@
 #include <FileManager>
 
 #define DIALOG_SELECT_LANGUAGE (2) //<!> If not defined, defaults to (1)
+#define LANGUAGE_NO_YSI //Only required if the YSI library is present in includes path
 #include <omp_language>
 
 #define MAX_FAILED_LOGINS (3)
