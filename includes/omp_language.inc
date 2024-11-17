@@ -180,8 +180,8 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
             continue;
 
         //Seperate data to variables, ignore invalid lines
-        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH], sscanfSpecifier[16];
-        format(sscanfSpecifier, sizeof(sscanfSpecifier), "s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH);
+        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH], sscanfSpecifier[64];
+        format(sscanfSpecifier, sizeof(sscanfSpecifier), "?<SSCANF_QUIET=1>s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH);
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
 
@@ -190,24 +190,30 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         {
             new len = strlen(content);
 
-            if (content[len] == '\n' && content[len-1] == '\r')
-                content[len-2] = EOS;
-            else
-                content[len-1] = EOS;
+            if (content[len-1] == '\n' && content[len-2] == '\r'){
+                if (languageFileCurrentLine < languageFileLines){
+                    content[len-2] = EOS;
+                }
+            }
+            else if (content[len-1] == '\n'){
+                if (languageFileCurrentLine < languageFileLines){
+                    content[len-1] = EOS;
+                }
+            }                
+            else{
+                PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
+            }
         }
 
         //Replace colour names with real colours, using variable gLanguageColours
         #if defined gLanguageColours
             for (new i = 0; i < sizeof(gLanguageColours); i++)
             {
-                new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets (who tf would do that?), it would trigger OOB RTE (since script finds colour, then checks for curly braces before and after found word)
+                new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets, string appears to becomes empty
 
                 while ((findPos = strfind(content, gLanguageColours[i][0], false, findPos)) != -1)
                 {
                     new endPos = findPos + strlen(gLanguageColours[i][0]);
-                    if (endPos >= sizeof(content))
-                        break; //Prevent OOB RTE
-
                     if (content[findPos-1] == '{' && content[endPos] == '}')
                     {
                         strdel(content, findPos, endPos);
