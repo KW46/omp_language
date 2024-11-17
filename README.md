@@ -222,6 +222,8 @@ Yes.
 * [Player_Language_Get()](#player_language_get)
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
 * [SendClientLanguageMessageToAll()](#sendclientlanguagemessagetoall)
+* [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
+* [GameLanguageTextForAll()](#gamelanguagetextforall)
 * [OnPlayerSelectLanguage()](#onplayerselectlanguage)
 
 [To main index](#index)
@@ -482,6 +484,53 @@ Sends a client message to all players, displaying the message in the selected la
 
 **Related functions/callbacks**  
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
+
+[To index](#functions-and-callbacks)
+
+---
+#### GameLanguageTextForPlayer
+`bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)`  
+Sends a game text to a player using the language system
+
+**Parameters**  
+`const playerid`: Player to show the gametext for  
+`const string:table[]`: Language table to get content from  
+`const string:identifier[]`: String to retrieve from the language table  
+`const time`: The duration of the text being shown in milliseconds  
+`const style`: The style of text to be displayed  
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+(bool) Output of GameTextForPlayer(), **true**: Function executed or **false**: Player not connected or gametext string is null  
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [GameLanguageTextForAll()](#gamelanguagetextforall)
+
+[To index](#functions-and-callbacks)
+
+---
+#### GameLanguageTextForAll
+`void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)`  
+Sends a game text to all players using the language system, displaying the gametext in the selected language of each individual player
+
+**Parameters**  
+`const string:table[]`: Language table to get content from  
+`const string:identifier[]`: String to retrieve from the language table  
+`const time`: The duration of the text being shown in milliseconds  
+`const style`: The style of text to be displayed  
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+Nothing
+
+**Notes**  
+<!> If you're not using YSI, and the to-be-sent text has format specifiers, you can't use this function. Instead you'll have to loop through each player and use `GameLanguageTextForPlayer()` for each player.
+
+**Related functions/callbacks**  
+* [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
 
 [To index](#functions-and-callbacks)
 
