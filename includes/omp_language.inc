@@ -191,10 +191,14 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
             continue;
 
         //Seperate data to variables, ignore invalid lines
-        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH], sscanfSpecifier[64];
-        format(sscanfSpecifier, sizeof(sscanfSpecifier), "?<SSCANF_QUIET=1>s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH);
+        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH+2], sscanfSpecifier[64];
+        format(sscanfSpecifier, sizeof(sscanfSpecifier), "?<SSCANF_QUIET=1>s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH+2);
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
+
+        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH){
+            PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
+        }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
@@ -210,9 +214,6 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
                 if (languageFileCurrentLine < languageFileLines){
                     content[len-1] = EOS;
                 }
-            }                
-            else{
-                PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
             }
         }
 
