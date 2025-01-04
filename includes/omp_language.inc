@@ -1,4 +1,4 @@
-//Include version: 1.02
+//Include version: 1.03
 
 #if defined _INC_omp_language
     #endinput
@@ -165,7 +165,13 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
 
     format(fullPath, sizeof(fullPath), "languages/%s_%s%s%s/%s", sLanguages[languageId][E_LANG_CODE], sLanguages[languageId][E_LANG_NAME], (IsNull(subDir) ? "" : "/"), subDir, file);
     format(tableName, sizeof(tableName), "%s%s%s", subDir, (IsNull(subDir) ? "" : "-"), file);
-    strdel(tableName, strlen(tableName) - 4, strlen(tableName));
+
+    for (new i = strlen(tableName); i > 0; i--){
+        if (tableName[i] == '.'){
+            strdel(tableName, i, strlen(tableName));
+            break;
+        }
+    }
 
     DB_FreeResultSet(DB_ExecuteQuery(sLanguageDBHandle, "CREATE TABLE IF NOT EXISTS `%s` (lang TINYINT NOT NULL, ident VARCHAR(64) NOT NULL, content VARCHAR(%d) NOT NULL, PRIMARY KEY(lang, ident));", tableName, LANGUAGE_MAX_CONTENT_LENGTH));
 
@@ -185,34 +191,41 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
             continue;
 
         //Seperate data to variables, ignore invalid lines
-        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH], sscanfSpecifier[16];
-        format(sscanfSpecifier, sizeof(sscanfSpecifier), "s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH);
+        new identifier[64], content[LANGUAGE_MAX_CONTENT_LENGTH+2], sscanfSpecifier[64];
+        format(sscanfSpecifier, sizeof(sscanfSpecifier), "?<SSCANF_QUIET=1>s[64]s[%d]", LANGUAGE_MAX_CONTENT_LENGTH+2);
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
+
+        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH){
+            PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
+        }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
         {
             new len = strlen(content);
 
-            if (content[len] == '\n' && content[len-1] == '\r')
-                content[len-2] = EOS;
-            else
-                content[len-1] = EOS;
+            if (content[len-1] == '\n' && content[len-2] == '\r'){
+                if (languageFileCurrentLine < languageFileLines){
+                    content[len-2] = EOS;
+                }
+            }
+            else if (content[len-1] == '\n'){
+                if (languageFileCurrentLine < languageFileLines){
+                    content[len-1] = EOS;
+                }
+            }
         }
 
         //Replace colour names with real colours, using variable gLanguageColours
         #if defined gLanguageColours
             for (new i = 0; i < sizeof(gLanguageColours); i++)
             {
-                new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets (who tf would do that?), it would trigger OOB RTE (since script finds colour, then checks for curly braces before and after found word)
+                new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets, string appears to becomes empty
 
                 while ((findPos = strfind(content, gLanguageColours[i][0], false, findPos)) != -1)
                 {
                     new endPos = findPos + strlen(gLanguageColours[i][0]);
-                    if (endPos >= sizeof(content))
-                        break; //Prevent OOB RTE
-
                     if (content[findPos-1] == '{' && content[endPos] == '}')
                     {
                         strdel(content, findPos, endPos);
@@ -558,9 +571,9 @@ stock void:Player_SelectLanguage(const playerid)
 }
 
 #if defined _INC_y_va
-    stock SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+    stock bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
 #else
-    stock SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[])
+    stock bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[])
 #endif
 {
     //Sends a client message to a player using the language system
@@ -569,7 +582,7 @@ stock void:Player_SelectLanguage(const playerid)
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: (int) Output of SendClientMessage (thus 1: message sent, 0: message not sent, player not connected)    
+    //Returns: (bool) Output of SendClientMessage (thus true: message sent, false: message not sent, player not connected)    
 
     #if defined _INC_y_va
         return SendClientMessage(playerid, colour, Player_Language_Get(playerid, table, identifier, ___(4)));
@@ -579,9 +592,9 @@ stock void:Player_SelectLanguage(const playerid)
 }
 
 #if defined _INC_y_va
-    stock SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+    stock bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
 #else
-    stock SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[])
+    stock bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[])
 #endif
 {
     //Sends a client message to all players using the language system
@@ -589,7 +602,7 @@ stock void:Player_SelectLanguage(const playerid)
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: (int) Always returns 1
+    //Returns: (bool) Always returns true
 
     #if defined _INC_y_iterate
         foreach (new i : Player)
@@ -604,6 +617,56 @@ stock void:Player_SelectLanguage(const playerid)
         #endif
     }
     return 1;
+}
+
+#if defined _INC_y_va
+    stock bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)
+#else
+    stock bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style)
+#endif
+{
+    //Sends a game text to a player using the language system
+    //  `playerid`: Player to to show the gametext for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `time`: The duration of the text being shown in milliseconds
+    //  `style`: The style of text to be displayed
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: (int) output of GameTextForPlayer(), thus 1: Function executed or 0: Player not connected or string (retrieved from table:identifier) is null
+
+    #if defined _INC_y_va
+        return GameTextForPlayer(playerid, Player_Language_Get(playerid, table, identifier), time, style, ___(5));
+    #else
+        return GameTextForPlayer(playerid, Player_Language_Get(playerid, table, identifier), time, style);
+    #endif
+}
+
+#if defined _INC_y_va
+    stock void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)
+#else
+    stock void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style)
+#endif
+{
+    //Shows a game text to all players using the language system
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `time`: The duration of the text being shown in milliseconds
+    //  `style`: The style of text to be displayed
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Nothing
+
+    #if defined _INC_y_iterate
+        foreach (new i : Player)
+    #else
+        for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
+    #endif
+    {
+        #if defined _INC_y_va
+            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style, ___(4));
+        #else
+            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style);
+        #endif
+    }
 }
 
 /*-- Callbacks --*/

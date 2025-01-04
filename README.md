@@ -178,7 +178,8 @@ Lorem ipsum dolor sit amet
 TEST
 ```
 
-**NOTE**: Make sure that all language directories have the same sub directories and files, and the same identifiers!
+**NOTE**: Make sure that all language directories have the same sub directories and files, and the same identifiers!  
+**NOTE 2**: Since version 1.03, any file extension (or none) is valid. But `.txt` is still preferred and recommended.
 
 [To index](#how-to-use)
 
@@ -221,6 +222,8 @@ Yes.
 * [Player_Language_Get()](#player_language_get)
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
 * [SendClientLanguageMessageToAll()](#sendclientlanguagemessagetoall)
+* [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
+* [GameLanguageTextForAll()](#gamelanguagetextforall)
 * [OnPlayerSelectLanguage()](#onplayerselectlanguage)
 
 [To main index](#index)
@@ -441,7 +444,7 @@ Retrieves a language string for a player. Optionally formats retrieved string (o
 
 ---
 #### SendClientLanguageMessage
-`SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+`bool:SendClientLanguageMessage(const playerid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
 Sends a client message to the player using the language system
 
 **Parameters**  
@@ -452,7 +455,7 @@ Sends a client message to the player using the language system
 `OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
-(int) Output of SendClientMessage(), thus **1**: Message was sent or **0**: Player isn't connected
+(bool) Output of SendClientMessage(), thus **true**: Message was sent or **false**: Player isn't connected
 
 **Notes**  
 None
@@ -464,7 +467,7 @@ None
 
 ---
 #### SendClientLanguageMessageToAll
-`SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+`bool:SendClientLanguageMessageToAll(const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
 Sends a client message to all players, displaying the message in the selected language of each individual player
 
 **Parameters**  
@@ -474,13 +477,60 @@ Sends a client message to all players, displaying the message in the selected la
 `OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
-(int) Output of SendClientMessage(), thus always returns 1
+(bool) Output of SendClientMessage(), thus always returns true
 
 **Notes**  
 <!> If you're not using YSI, and the to-be-sent text has format specifiers, you can't use this function. Instead you'll have to loop through each player and use `SendClientLanguageMessage()` for each player.
 
 **Related functions/callbacks**  
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
+
+[To index](#functions-and-callbacks)
+
+---
+#### GameLanguageTextForPlayer
+`bool:GameLanguageTextForPlayer(const playerid, const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)`  
+Sends a game text to a player using the language system
+
+**Parameters**  
+`const playerid`: Player to show the gametext for  
+`const string:table[]`: Language table to get content from  
+`const string:identifier[]`: String to retrieve from the language table  
+`const time`: The duration of the text being shown in milliseconds  
+`const style`: The style of text to be displayed  
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+(bool) Output of GameTextForPlayer(), **true**: Function executed or **false**: Player not connected or gametext string is null  
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [GameLanguageTextForAll()](#gamelanguagetextforall)
+
+[To index](#functions-and-callbacks)
+
+---
+#### GameLanguageTextForAll
+`void:GameLanguageTextForAll(const string:table[], const string:identifier[], const time, const style, OPEN_MP_TAGS:...)`  
+Sends a game text to all players using the language system, displaying the gametext in the selected language of each individual player
+
+**Parameters**  
+`const string:table[]`: Language table to get content from  
+`const string:identifier[]`: String to retrieve from the language table  
+`const time`: The duration of the text being shown in milliseconds  
+`const style`: The style of text to be displayed  
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+Nothing
+
+**Notes**  
+<!> If you're not using YSI, and the to-be-sent text has format specifiers, you can't use this function. Instead you'll have to loop through each player and use `GameLanguageTextForPlayer()` for each player.
+
+**Related functions/callbacks**  
+* [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
 
 [To index](#functions-and-callbacks)
 
