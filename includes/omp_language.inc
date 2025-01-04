@@ -490,65 +490,6 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     return true;
 }
 
-stock void:Player_SelectLanguage(const playerid)
-{
-    //Shows dialog with available languages. When selected, change player's language to that language.
-    //If only one language is available, language is set to that language.
-    //   `playerid`: Player to show the dialog to
-    //Returns: Nothing
-
-    if (!IsPlayerConnected(playerid))
-        return;
-
-    new languageCount = Language_Count();
-    if (languageCount > 1)
-    {
-        new dialogStr[64 * LANGUAGES_MAX];
-        for (new i = 0; i < languageCount; i++)
-        {
-            new languageCode[3], languageName[32];
-            if (Language_GetDataFromID(i, languageCode, languageName))
-                format(dialogStr, sizeof(dialogStr), "%s- %s (%s)%s", dialogStr, languageCode, languageName, ((i == languageCount - 1) ? "" : "\n"));
-        }
-
-        #if defined _INC_y_dialog && defined _INC_y_inline
-            inline OnSelectLanguage(response, listitem, string:inputtext[])
-            {
-                #pragma unused inputtext
-                if (response)
-                {
-                    new languageCode[3], languageName[32];
-                    Language_GetDataFromID(listitem, languageCode, languageName);
-                    Player_SetLanguage(playerid, languageCode);
-                    SendClientLanguageMessage(playerid, -1, "_omp_language", "MSG_SELECTED_LANGUAGE", languageName);
-                    CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
-                }
-            }
-
-            Dialog_ShowCallback(
-                playerid,
-                using inline OnSelectLanguage,
-                DIALOG_STYLE_LIST,
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_TITLE"),
-                dialogStr,
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_SELECT"),
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_CANCEL")
-            );
-        #else
-            ShowPlayerDialog(
-                playerid,
-                DIALOG_SELECT_LANGUAGE,
-                DIALOG_STYLE_LIST,
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_TITLE"),
-                dialogStr,
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_SELECT"),
-                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_CANCEL")
-            );
-        #endif
-    }
-    else Player_SetLanguage(playerid, sDefaultLanguage);
-}
-
 #if defined _INC_y_va
     stock string:Player_Language_Get(const playerid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
 #else
@@ -617,6 +558,65 @@ stock void:Player_SelectLanguage(const playerid)
         #endif
     }
     return 1;
+}
+
+stock void:Player_SelectLanguage(const playerid)
+{
+    //Shows dialog with available languages. When selected, change player's language to that language.
+    //If only one language is available, language is set to that language.
+    //   `playerid`: Player to show the dialog to
+    //Returns: Nothing
+
+    if (!IsPlayerConnected(playerid))
+        return;
+
+    new languageCount = Language_Count();
+    if (languageCount > 1)
+    {
+        new dialogStr[64 * LANGUAGES_MAX];
+        for (new i = 0; i < languageCount; i++)
+        {
+            new languageCode[3], languageName[32];
+            if (Language_GetDataFromID(i, languageCode, languageName))
+                format(dialogStr, sizeof(dialogStr), "%s- %s (%s)%s", dialogStr, languageCode, languageName, ((i == languageCount - 1) ? "" : "\n"));
+        }
+
+        #if defined _INC_y_dialog && defined _INC_y_inline
+            inline OnSelectLanguage(response, listitem, string:inputtext[])
+            {
+                #pragma unused inputtext
+                if (response)
+                {
+                    new languageCode[3], languageName[32];
+                    Language_GetDataFromID(listitem, languageCode, languageName);
+                    Player_SetLanguage(playerid, languageCode);
+                    SendClientLanguageMessage(playerid, -1, "_omp_language", "MSG_SELECTED_LANGUAGE", languageName);
+                    CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
+                }
+            }
+
+            Dialog_ShowCallback(
+                playerid,
+                using inline OnSelectLanguage,
+                DIALOG_STYLE_LIST,
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_TITLE"),
+                dialogStr,
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_SELECT"),
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_CANCEL")
+            );
+        #else
+            ShowPlayerDialog(
+                playerid,
+                DIALOG_SELECT_LANGUAGE,
+                DIALOG_STYLE_LIST,
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_TITLE"),
+                dialogStr,
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_SELECT"),
+                Player_Language_Get(playerid, "_omp_language", "DIALOG_BUTTON_CANCEL")
+            );
+        #endif
+    }
+    else Player_SetLanguage(playerid, sDefaultLanguage);
 }
 
 #if defined _INC_y_va
