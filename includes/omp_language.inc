@@ -557,7 +557,7 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
             SendClientMessage(i, colour, Player_Language_Get(i, table, identifier));
         #endif
     }
-    return 1;
+    return true;
 }
 
 stock void:Player_SelectLanguage(const playerid)
