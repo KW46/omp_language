@@ -201,19 +201,15 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
-        if (languageFileCurrentLine < languageFileLines)
-        {
+        if (langFileCurrentLine < langFileLines){
             new len = strlen(content);
 
+            //Hi\r\n
             if (content[len-1] == '\n' && content[len-2] == '\r'){
-                if (languageFileCurrentLine < languageFileLines){
-                    content[len-2] = EOS;
-                }
+                content[len-2] = EOS;
             }
-            else if (content[len-1] == '\n'){
-                if (languageFileCurrentLine < languageFileLines){
-                    content[len-1] = EOS;
-                }
+            else{
+                content[len-1] = EOS;
             }
         }
 
