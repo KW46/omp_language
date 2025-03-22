@@ -201,16 +201,14 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
-        if (langFileCurrentLine < langFileLines){
+        if (languageFileCurrentLine < languageFileLines)
+        {
             new len = strlen(content);
 
-            //Hi\r\n
-            if (content[len-1] == '\n' && content[len-2] == '\r'){
+            if (content[len-1] == '\n' && content[len-2] == '\r')
                 content[len-2] = EOS;
-            }
-            else{
+            else
                 content[len-1] = EOS;
-            }
         }
 
         //Replace colour names with real colours, using variable gLanguageColours
