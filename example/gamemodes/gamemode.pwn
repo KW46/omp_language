@@ -51,7 +51,7 @@ static void:ShowLoginDialog(const playerid)
     ;
 
     GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
-    
+
     inline OnAttemptLogin(response, listitem, string:inputtext[])
     {
         #pragma unused listitem
@@ -76,7 +76,7 @@ static void:ShowLoginDialog(const playerid)
             }
         }
     }
-    
+
     Dialog_ShowCallback(
         playerid,
         using inline OnAttemptLogin,
@@ -99,25 +99,25 @@ hook OnPlayerConnect(playerid)
     spWelcomeTextDraw[playerid] = CreatePlayerTextDraw(playerid, 380.0, 341.15, " ");
     PlayerTextDrawLetterSize(playerid, spWelcomeTextDraw[playerid], 0.58, 2.42);
     PlayerTextDrawAlignment(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_ALIGN:2);
-    
+
     PlayerTextDrawColour(playerid, spWelcomeTextDraw[playerid], 0xDDDDDBFF);
     PlayerTextDrawBackgroundColour(playerid, spWelcomeTextDraw[playerid], 0x000000AA);
     PlayerTextDrawBoxColour(playerid, spWelcomeTextDraw[playerid], 0x00000000);
-    
+
     PlayerTextDrawSetShadow(playerid, spWelcomeTextDraw[playerid], 2);
     PlayerTextDrawSetOutline(playerid, spWelcomeTextDraw[playerid], 0);
     PlayerTextDrawFont(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_FONT:1);
     PlayerTextDrawSetProportional(playerid, spWelcomeTextDraw[playerid], true);
     PlayerTextDrawUseBox(playerid, spWelcomeTextDraw[playerid], true);
     PlayerTextDrawTextSize(playerid, spWelcomeTextDraw[playerid], 40.0, 460.0);
-    
+
     new 
         playerName[MAX_PLAYER_NAME]
     ;
 
     GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
     SendClientLanguageMessageToAll(-1, "global", "PLAYER_JOIN", playerName, playerid);
-    
+
     Player_SelectLanguage(playerid);
 }
 
@@ -146,7 +146,7 @@ hook OnPlayerSelectedLanguage(playerid)
 
     GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
     PlayerTextDrawLanguageString(playerid, spWelcomeTextDraw[playerid], "user-auth", "WELCOME_MESSAGE", playerName);
-    
+
     SetTimerEx("HideWelcomeTextDraw", 10000, false, "i", playerid);
 
     ShowLoginDialog(playerid);
@@ -165,11 +165,11 @@ hook OnGameModeInit()
     gServerInfoTextDraw = TextDrawCreate(320.0, 22.0, " ");
     TextDrawLetterSize(gServerInfoTextDraw, 0.6, 1.8);
     TextDrawAlignment(gServerInfoTextDraw, TEXT_DRAW_ALIGN:2);
-    
+
     TextDrawColour(gServerInfoTextDraw, 0x906210FF);
     TextDrawBackgroundColour(gServerInfoTextDraw, 0x000000AA);
     TextDrawBoxColour(gServerInfoTextDraw, 0x00000000);
-    
+
     TextDrawSetShadow(gServerInfoTextDraw, 0);
     TextDrawSetOutline(gServerInfoTextDraw, 1);
     TextDrawFont(gServerInfoTextDraw, TEXT_DRAW_FONT:2);
