@@ -1,0 +1,2 @@
+PLAYER_JOIN	    {YELLOW}[JOIN] {GREY}%s(%d) {WHITE}acabou de entrar no servidor!
+SERVER_INFO     Rodando com omp_language

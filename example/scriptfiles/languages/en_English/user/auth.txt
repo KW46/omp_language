@@ -5,3 +5,5 @@ DIALOG_BUTTON_LOGIN	    {WHITE}Login
 DIALOG_BUTTON_QUIT	    {RED}Quit
 ERR_WRONG_PASSWORD	    {RED}[ERROR] {WHITE}Wrong password entered! (%d/%d)
 MESSAGE_LOGIN_OK	    {GREEN}[OK] {WHITE}Succesfully logged in!
+ERR_WRONG_PASSWORD      {RED}Wrong password! Attempt %d/%d
+WELCOME_MESSAGE         Welcome back, %s!
