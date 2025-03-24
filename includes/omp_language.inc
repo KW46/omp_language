@@ -566,67 +566,67 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
 
 #if defined _INC_y_va
     stock PlayerTextDrawLanguageString(const playerid, PlayerText:textid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
-    {
-        //Sets a player-textdraw string using the language system
-        //  `playerid`: Player who owns the textdraw
-        //  `textid`: The PlayerTextDraw to set the string for
-        //  `table[]`: Table to get the content from
-        //  `identifier[]`: Identifier from given table to retrieve
-        //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-        //Returns: output of PlayerTextDrawSetString(), thus 1 on success, 0 on failure
-        
-        static
-            text[LANGUAGE_MAX_CONTENT_LENGTH]
-        ;
-       
-        strcopy(text, va_return(Player_Language_Get(playerid, table, identifier, ___(4))));
-        return PlayerTextDrawSetString(playerid, textid, text);
-    }
 #else
     stock PlayerTextDrawLanguageString(const playerid, PlayerText:textid, const string:table[], const string:identifier[])
-    {
-        //Sets a player-textdraw string using the language system
-        //  `playerid`: Player who owns the textdraw
-        //  `textid`: The PlayerTextDraw to set the string for
-        //  `table[]`: Table to get the content from
-        //  `identifier[]`: Identifier from given table to retrieve
-        //Returns: output of PlayerTextDrawSetString(), thus 1 on success, 0 on failure
-        
-        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
-    }
 #endif
+{
+    //Sets a player-textdraw string using the language system
+    //  `playerid`: Player who owns the textdraw
+    //  `textid`: The PlayerTextDraw to set the string for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: output of PlayerTextDrawSetString(), thus 1 on success, 0 on failure
+    
+    #if defined _INC_y_va
+        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier, ___(4)));
+    #else
+        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
+    #endif
+}
 
 #if defined _INC_y_va
     stock TextDrawLanguageStringForPlayer(const playerid, Text:textid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
-    {
-        //Sets a textdraw string for a specific player using the language system
-        //  `playerid`: Player to show the textdraw to
-        //  `textid`: The TextDraw to set the string for
-        //  `table[]`: Table to get the content from
-        //  `identifier[]`: Identifier from given table to retrieve
-        //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-        //Returns: output of TextDrawSetStringForPlayer(), thus 1 on success, 0 on failure
-        
-        static
-            text[LANGUAGE_MAX_CONTENT_LENGTH]
-        ;
-       
-        strcopy(text, va_return(Player_Language_Get(playerid, table, identifier, ___(4))));
-        return TextDrawSetStringForPlayer(textid, playerid, text);
-    }
 #else
     stock TextDrawLanguageStringForPlayer(const playerid, Text:textid, const string:table[], const string:identifier[])
-    {
-        //Sets a textdraw string for a specific player using the language system
-        //  `playerid`: Player to show the textdraw to
-        //  `textid`: The TextDraw to set the string for
-        //  `table[]`: Table to get the content from
-        //  `identifier[]`: Identifier from given table to retrieve
-        //Returns: output of TextDrawSetStringForPlayer(), thus 1 on success, 0 on failure
-        
-        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
-    }
 #endif
+{
+    //Sets a textdraw string for a specific player using the language system
+    //  `playerid`: Player to show the textdraw to
+    //  `textid`: The TextDraw to set the string for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: output of TextDrawSetStringForPlayer(), thus 1 on success, 0 on failure
+    
+    #if defined _INC_y_va
+        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier, ___(4)));
+    #else
+        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
+    #endif
+}
+
+#if defined _INC_y_va
+    stock PlayerText:CreatePlayerLanguageTextDraw(const playerid, Float:x, Float:y, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock PlayerText:CreatePlayerLanguageTextDraw(const playerid, Float:x, Float:y, const string:table[], const string:identifier[])
+#endif
+{
+    //Creates a player-textdraw using the language system
+    //  `playerid`: Player to create the textdraw for
+    //  `Float:x`: X-Coordinate
+    //  `Float:y`: Y-Coordinate
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: PlayerText:The ID of the created textdraw
+    
+    #if defined _INC_y_va
+        return CreatePlayerTextDraw(playerid, x, y, Player_Language_Get(playerid, table, identifier, ___(5)));
+    #else
+        return CreatePlayerTextDraw(playerid, x, y, Player_Language_Get(playerid, table, identifier));
+    #endif
+}
 
 stock void:Player_SelectLanguage(const playerid)
 {
