@@ -550,18 +550,28 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
     //Returns: (bool) Always returns true
 
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+    //Note that I didn't use array size 128 (which is limit for text output in open.mp)
+    //Some people may have a script that breaks longer messages in multiple messages, so that's why
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
+        #if defined _INC_y_va
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(3)));
+        #else
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
+        #endif
+    }
+
     #if defined _INC_y_iterate
         foreach (new i : Player)
     #else
         for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
     #endif
-    {
-        #if defined _INC_y_va
-            SendClientMessage(i, colour, Player_Language_Get(i, table, identifier, ___(3)));
-        #else
-            SendClientMessage(i, colour, Player_Language_Get(i, table, identifier));
-        #endif
-    }
+            SendClientMessage(i, colour, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))]);
     return true;
 }
 
@@ -725,6 +735,8 @@ stock void:Player_SelectLanguage(const playerid)
     //Returns: Nothing
 
     new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+    //Default LANGUAGE_MAX_CONTENT_LENGTH may be too much for a gametext.
+    //Since I couldn't find limits on gametext lengths (except using colour codes beyond the 255th character may crash a client), just going with LANGUAGE_MAX_CONTENT_LENGTH
 
     for (new i = 0; i < LANGUAGES_MAX; i++)
     {
@@ -732,9 +744,9 @@ stock void:Player_SelectLanguage(const playerid)
             break;
 
         #if defined _INC_y_va
-            format(fetchedData[i], LANGUAGES_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
         #else
-            format(fetchedData[i], LANGUAGES_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
         #endif
     }
 
@@ -789,8 +801,9 @@ forward OnPlayerSelectedLanguage(playerid);
                 return 1;
             #endif        
         #endif
+    #else
+        return 1;
     #endif
-    return 1;
 }
 #if !defined _INC_y_hooks
     #if defined FILTERSCRIPT
