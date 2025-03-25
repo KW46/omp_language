@@ -724,18 +724,26 @@ stock void:Player_SelectLanguage(const playerid)
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
     //Returns: Nothing
 
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
+        #if defined _INC_y_va
+            format(fetchedData[i], LANGUAGES_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
+        #else
+            format(fetchedData[i], LANGUAGES_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
+        #endif
+    }
+
     #if defined _INC_y_iterate
         foreach (new i : Player)
     #else
         for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
     #endif
-    {
-        #if defined _INC_y_va
-            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style, ___(4));
-        #else
-            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style);
-        #endif
-    }
+            GameTextForPlayer(i, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))], time, style);
 }
 
 /*-- Callbacks --*/
