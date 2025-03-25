@@ -176,8 +176,10 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
     format(fullPath, sizeof(fullPath), "languages/%s_%s%s%s/%s", sLanguages[languageId][E_LANG_CODE], sLanguages[languageId][E_LANG_NAME], (IsNull(subDir) ? "" : "/"), subDir, file);
     format(tableName, sizeof(tableName), "%s%s%s", subDir, (IsNull(subDir) ? "" : "-"), file);
 
-    for (new i = strlen(tableName); i > 0; i--){
-        if (tableName[i] == '.'){
+    for (new i = strlen(tableName); i > 0; i--)
+    {
+        if (tableName[i] == '.')
+        {
             strdel(tableName, i, strlen(tableName));
             break;
         }
@@ -206,9 +208,8 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
 
-        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH){
+        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH)
             PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
-        }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
