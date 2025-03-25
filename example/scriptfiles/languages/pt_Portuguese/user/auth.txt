@@ -1,0 +1,8 @@
+DIALOG_LOGIN_TITLE	    {WHITE}Login
+# Sistema de login muito seguro:
+DIALOG_LOGIN_CONTENT	{WHITE}Bem-vindo de volta {GREY}%s{WHITE}!\nPor favor, digite a senha da sua conta: {GREY}1234
+DIALOG_BUTTON_LOGIN	    {WHITE}Entrar
+DIALOG_BUTTON_QUIT	    {RED}Sair
+ERR_WRONG_PASSWORD	    {RED}[ERRO] {WHITE}Senha incorreta digitada! (%d/%d)
+MESSAGE_LOGIN_OK	    {GREEN}[OK] {WHITE}Login realizado com sucesso!
+WELCOME_MESSAGE         Bem-vindo de volta, %s!

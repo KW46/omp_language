@@ -5,3 +5,4 @@ DIALOG_BUTTON_LOGIN	    {WHITE}Login
 DIALOG_BUTTON_QUIT	    {RED}Verlaat
 ERR_WRONG_PASSWORD	    {RED}[ERROR] {WHITE}Verkeerd wachtwoord ingevoerd! (%d/%d)
 MESSAGE_LOGIN_OK	    {GREEN}[OK] {WHITE}Je bent nu ingelogd!
+WELCOME_MESSAGE         Welkom terug, %s!
