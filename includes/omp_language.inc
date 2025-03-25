@@ -815,6 +815,60 @@ stock void:Player_SelectLanguage(const playerid)
     #endif
 }
 
+//native PlayerText3D:CreatePlayer3DTextLabel(playerid, const text[], colour, Float:x, Float:y, Float:z, Float:drawDistance, parentPlayerid = INVALID_PLAYER_ID, parentVehicleid = INVALID_VEHICLE_ID, bool:testLOS = false, OPEN_MP_TAGS:...);
+//native bool:UpdatePlayer3DTextLabelText(playerid, PlayerText3D:textid, colour, const text[], OPEN_MP_TAGS:...);
+
+#if defined _INC_y_va
+    stock PlayerText3D:CreatePlayer3DLanguageTextLabel(const playerid, const string:table[], const string:identifier[], const colour, const Float:x, const Float:y, const Float:z, const Float:drawDistance, const parentPlayerid = INVALID_PLAYER_ID, const parentVehicleid = INVALID_VEHICLE_ID, const bool:testLOS = false, OPEN_MP_TAGS:...)
+#else
+    stock PlayerText3D:CreatePlayer3DLanguageTextLabel(const playerid, const string:table[], const string:identifier[], const colour, const Float:x, const Float:y, const Float:z, const Float:drawDistance, const parentPlayerid = INVALID_PLAYER_ID, const parentVehicleid = INVALID_VEHICLE_ID, const bool:testLOS = false)
+#endif
+{
+    //Creates a 3D text label for a specific player using the language system
+    //  `playerid`: The ID of the player to create the 3D text label for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `colour`: The text colour
+    //  `Float:x`: X coordinate (or offset if attached)
+    //  `Float:y`: Y coordinate (or offset if attached)
+    //  `Float:z`: Z coordinate (or offest if attached)
+    //  `Float:drawDistance`: The distance where you are able to see the 3D Text Label
+    //  `parentPlayerid`: The player you want to attach the 3D Text Label to (None: INVALID_PLAYER_ID)
+    //  `parentVehicleid`: The vehicle you want to attach the 3D Text Label to (None: INVALID_VEHICLE_ID)
+    //  `testLOS`: Test the line of sight (true) so this text can't be seen through walls - or not (false)
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Output of CreatePlayer3DTextLabel(): ID of the newly created label or INVALID_3DTEXT_ID if the Player 3D Text Label limit (MAX_3DTEXT_PLAYER) was reached
+    
+    #if defined _INC_y_va
+        return CreatePlayer3DTextLabel(playerid, Player_Language_Get(playerid, table, identifier, ___(11)), colour, x, y, z, drawDistance, parentPlayerid, parentVehicleid, testLOS);
+    #else
+        return CreatePlayer3DTextLabel(playerid, Player_Language_Get(playerid, table, identifier), colour, x, y, z, drawDistance, parentPlayerid, parentVehicleid, testLOS);
+    #endif
+}
+
+#if defined _INC_y_va
+    stock bool:UpdatePlayer3DLanguageTextLabelText(const playerid, const PlayerText3D:textid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:UpdatePlayer3DLanguageTextLabelText(const playerid, const PlayerText3D:textid, const colour, const string:table[], const string:identifier[])
+#endif
+{
+    //Updates a player 3D Text Label's text and colour using the language system
+    //  `playerid`: The ID of the player for which the 3D Text Label was created
+    //  `textid`: The 3D Text Label you want to update
+    //  `colour`: The color the 3D Text Label should have from now on
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Always return true
+
+    #if defined _INC_y_va
+        UpdatePlayer3DTextLabelText(playerid, textid, colour, Player_Language_Get(playerid, table, identifier, ___(5)));
+    #else
+        UpdatePlayer3DTextLabelText(playerid, textid, colour, Player_Language_Get(playerid, table, identifier));
+    #endif
+    return true;
+}
+
 /*-- Callbacks --*/
 forward OnPlayerSelectedLanguage(playerid);
 
