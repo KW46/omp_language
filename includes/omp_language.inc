@@ -758,6 +758,63 @@ stock void:Player_SelectLanguage(const playerid)
             GameTextForPlayer(i, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))], time, style);
 }
 
+#if defined _INC_y_va
+    stock bool:SendPlayerLanguageMessageToAll(const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:SendPlayerLanguageMessageToAll(const senderid, const string:table[], const string:identifier[])
+#endif
+{
+    //Sends a message in the name of a player to all other players on the server using the language system
+    //  `senderid`: The ID of the sender. If invalid, the message will not be sent
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Always returns true
+
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
+        #if defined _INC_y_va
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(3)));
+        #else
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
+        #endif
+    }
+
+    #if defined _INC_y_iterate
+        foreach (new i : Player)
+    #else
+        for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
+    #endif
+           SendPlayerMessageToPlayer(i, senderid, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))]);    
+    return true;
+}
+
+#if defined _INC_y_va
+    stock bool:SendPlayerLanguageMessageToPlayer(const playerid, const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:SendPlayerLanguageMessageToPlayer(const playerid, const senderid, const string:table[], const string:identifier[])
+#endif
+{
+    //Sends a message in the name of a player to another player on the server using the language system
+    //  `playerid`: The ID of the player who will receive the message.
+    //  `senderid`: The ID of the sender. If invalid, the message will not be sent
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Output of SendPlayerMessageToPlayer(), thus true: function executed successfully or false: Failed ot execute (specified player does not exist)
+
+    #if defined _INC_y_va
+        return SendPlayerMessageToPlayer(playerid, senderid, Player_Language_Get(playerid, table, identifier, ___(4)));
+    #else
+        return SendPlayerMessageToPlayer(playerid, senderid, Player_Language_Get(playerid, table, identifier));
+    #endif
+}
+
 /*-- Callbacks --*/
 forward OnPlayerSelectedLanguage(playerid);
 
