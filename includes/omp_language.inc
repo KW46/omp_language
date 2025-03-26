@@ -653,13 +653,14 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: output of PlayerTextDrawSetString(), thus 1 on success, 0 on failure
+    //Returns: Always returns 1
     
     #if defined _INC_y_va
-        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier, ___(4)));
+        PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier, ___(4)));
     #else
-        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
+        PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
     #endif
+    return 1;
 }
 
 #if defined _INC_y_va
@@ -674,13 +675,14 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: output of TextDrawSetStringForPlayer(), thus 1 on success, 0 on failure
+    //Returns: Always returns 1
     
     #if defined _INC_y_va
-        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier, ___(4)));
+        TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier, ___(4)));
     #else
-        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
+        TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
     #endif
+    return 1;
 }
 
 #if defined _INC_y_va
