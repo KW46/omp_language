@@ -1,3 +1,19 @@
+/*
+ *                               _                                          
+ *   ___  _ __ ___  _ __        | | __ _ _ __   __ _ _   _  __ _  __ _  ___ 
+ *  / _ \| '_ ` _ \| '_ \       | |/ _` | '_ \ / _` | | | |/ _` |/ _` |/ _ \
+ * | (_) | | | | | | |_) | ___  | | (_| | | | | (_| | |_| | (_| | (_| |  __/
+ *  \___/|_| |_| |_| .__/ |___| |_|\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
+ *                 |_|                         |___/             |___/      
+ *  
+ !  - omp_language test gamemode created and maintained by KW46 (https://github.com/KW46) (v1.05) 
+ !  - This gamemode demonstrates the functionality of the omp_language include without YSI
+ */
+
+//==============================================================================
+//                       INCLUDES & LIBRARY SETUP
+//==============================================================================
+
 #pragma dynamic 7000
 #pragma option -v2
 
@@ -9,6 +25,10 @@
 #define LANGUAGE_NO_YSI //Only required if the YSI library is present in includes path
 #include <omp_language>
 
+//==============================================================================
+//                        CONSTANTS & DEFINITIONS
+//==============================================================================
+
 #define MAX_FAILED_LOGINS (3)
 
 enum
@@ -16,7 +36,18 @@ enum
     DIALOG_LOGIN = 1
 };
 
-static spFailedLogins[MAX_PLAYERS];
+//==============================================================================
+//                           STATIC VARIABLES
+//==============================================================================
+
+static
+    spFailedLogins[MAX_PLAYERS],
+    PlayerText:spWelcomeTextDraw[MAX_PLAYERS]
+;
+
+//==============================================================================
+//                           DIALOG FUNCTIONS
+//==============================================================================
 
 static void:ShowLoginDialog(const playerid)
 {
@@ -38,32 +69,64 @@ static void:ShowLoginDialog(const playerid)
 
 main() return;
 
+//==============================================================================
+//                           PLAYER EVENT CALLBACKS
+//==============================================================================
+
 public OnPlayerConnect(playerid)
 {
     spFailedLogins[playerid] = 0;
 
-    new playerName[MAX_PLAYER_NAME];
+    new
+        playerName[MAX_PLAYER_NAME],
+        textDrawStr[100]
+    ;
     GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
 
-    //Yes, you're seeing it correctly, you can't use SendClientLanguageMessageToAll() when using format specifiers in selected string.
-    //You could technically but you can't format one string for all players. Again, you can, but then some players may see a message in the wrong language.
-    //As seen in example file `gamemode.pwn`, the next 9 lines of code could simply be a simple  `SendClientLanguageMessageToAll(-1, "global", "PLAYER_JOIN", playerName, playerid);` if you're using YSI.
-    //Yes, I could make variable arguments without needing YSI, but I won't, cba, if you want that, just use YSI.
-    for (new i = 0; i < MAX_PLAYERS; i++)
+    format(textDrawStr, sizeof(textDrawStr), Player_Language_Get(playerid, "user-auth", "WELCOME_MESSAGE"), playerName);
+
+    spWelcomeTextDraw[playerid] = CreatePlayerTextDraw(playerid, 380.0, 341.15, textDrawStr);
+    PlayerTextDrawLetterSize(playerid, spWelcomeTextDraw[playerid], 0.58, 2.42);
+    PlayerTextDrawAlignment(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_ALIGN:2);
+    PlayerTextDrawColour(playerid, spWelcomeTextDraw[playerid], 0xDDDDDBFF);
+    PlayerTextDrawBackgroundColour(playerid, spWelcomeTextDraw[playerid], 0x000000AA);
+    PlayerTextDrawBoxColour(playerid, spWelcomeTextDraw[playerid], 0x00000000);
+    PlayerTextDrawSetShadow(playerid, spWelcomeTextDraw[playerid], 2);
+    PlayerTextDrawSetOutline(playerid, spWelcomeTextDraw[playerid], 0);
+    PlayerTextDrawFont(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_FONT:1);
+    PlayerTextDrawSetProportional(playerid, spWelcomeTextDraw[playerid], true);
+    PlayerTextDrawUseBox(playerid, spWelcomeTextDraw[playerid], true);
+    PlayerTextDrawTextSize(playerid, spWelcomeTextDraw[playerid], 40.0, 460.0);
+
+    PlayerTextDrawShow(playerid, spWelcomeTextDraw[playerid]);
+
+    //SendClientLanguageMessageToAll(-1, "global", "PLAYER_JOIN", playerName, playerid);
+    //This one-liner above must be replaced with the following when not using y_va (which is why I highly recommend using YSI, or at least y_va)
+    new welcomeMessage[LANGUAGES_MAX][144];
+    for (new i = 0, j = Language_Count(); i < j; i++)
     {
-        if (IsPlayerConnected(i))
-        {
-            new str[144];
-            format(str, sizeof(str), Player_Language_Get(i, "global", "PLAYER_JOIN"), playerName, playerid);
-            SendClientMessage(i, -1, str);
-        }
+        new languageCode[3], languageName[32];
+        Language_GetDataFromID(i, languageCode, languageName);
+        format(welcomeMessage[i], sizeof(welcomeMessage[]), Language_Get(languageCode, "global", "PLAYER_JOIN"), playerName, playerid);
     }
+    for (new i = 0; i < MAX_PLAYERS; i++)
+        if (IsPlayerConnected(i))
+            SendClientMessage(i, -1, welcomeMessage[Language_GetIDFromData(Player_GetLanguage(i))]);
+
     Player_SelectLanguage(playerid);
+    return 1;
+}
+
+public OnPlayerDisconnect(playerid, reason)
+{
+    PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
     return 1;
 }
 
 public OnPlayerSelectedLanguage(playerid)
 {
+    SetTimerEx("HideWelcomeTextDraw", 10000, false, "i", playerid);
+
     ShowLoginDialog(playerid);
 }
 
@@ -93,4 +156,68 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
         return 1;
     }
     return 0;
+}
+
+forward HideWelcomeTextDraw(playerid);
+public HideWelcomeTextDraw(playerid)
+{
+    if (IsPlayerConnected(playerid))
+    {
+        PlayerTextDrawHide(playerid, spWelcomeTextDraw[playerid]);
+    }
+    return true;
+}
+
+//==============================================================================
+//                           GAMEMODE EVENT HOOKS
+//==============================================================================
+new 
+    Text:gServerInfoTextDraw
+;
+
+public OnGameModeInit()
+{
+    gServerInfoTextDraw = TextDrawCreate(320.0, 22.0, " ");
+    TextDrawLetterSize(gServerInfoTextDraw, 0.6, 1.8);
+    TextDrawAlignment(gServerInfoTextDraw, TEXT_DRAW_ALIGN:2);
+
+    TextDrawColour(gServerInfoTextDraw, 0x906210FF);
+    TextDrawBackgroundColour(gServerInfoTextDraw, 0x000000AA);
+    TextDrawBoxColour(gServerInfoTextDraw, 0x00000000);
+
+    TextDrawSetShadow(gServerInfoTextDraw, 0);
+    TextDrawSetOutline(gServerInfoTextDraw, 1);
+    TextDrawFont(gServerInfoTextDraw, TEXT_DRAW_FONT:2);
+    TextDrawSetProportional(gServerInfoTextDraw, true);
+    TextDrawUseBox(gServerInfoTextDraw, true);
+    TextDrawTextSize(gServerInfoTextDraw, 200.0, 620.0);
+
+    return 1;
+}
+
+forward HideServerInfoTextDraw(playerid);
+public HideServerInfoTextDraw(playerid)
+{
+    if (IsPlayerConnected(playerid))
+    {
+        TextDrawHideForPlayer(playerid, gServerInfoTextDraw);
+    }
+    return 1;
+}
+
+public OnPlayerSpawn(playerid)
+{
+    TextDrawShowForPlayer(playerid, gServerInfoTextDraw);
+
+    TextDrawLanguageStringForPlayer(playerid, gServerInfoTextDraw, "global", "SERVER_INFO");
+
+    SetTimerEx("HideServerInfoTextDraw", 10000, false, "i", playerid);
+
+    return 1;
+}
+
+public OnGameModeExit()
+{
+    TextDrawDestroy(gServerInfoTextDraw);
+    return 1;
 }

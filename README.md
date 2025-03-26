@@ -126,6 +126,22 @@ Define this to prevent inclusion of y_foreach.
 Define this to prevent inclusion of y_dialog and y_inline.  
 If not defined, omp_language will attempt to include both y_dialog and y_inline.
 
+`LANGUAGE_SORT_LANGUAGES`  
+readdir() does not guarantee ordering items. Those who want their languages ordered can define LANGUAGE_SORT_LANGUAGES.  
+When defined, you'll also have to define either LANGUAGE_SORT_COUNTRY_NAME **or** LANGUAGE_SORT_COUNTRY_CODE.  
+This requires md-sort to be included (must be in either `(include_path)/md-sort.inc` or `(include_path)/md-sort/md-sort.inc`).  
+Note that YSI provides md-sort already.
+
+`LANGUAGE_SORT_COUNTRY_NAME`  
+Define this to sort languages by language name when sorting languages.  
+
+`LANGUAGE_SORT_COUNTRY_CODE`  
+Define this to sort languages by language code when sorting languages.  
+
+`LANGUAGE_SORT_METHOD`  
+Optional. Define this with either `SORT_ASC` or `SORT_DESC` to order languages ascending or descending.  
+Default value if not defined: `SORT_ASC`
+
 [To index](#how-to-use)
 
 ### Embedded colour names
@@ -224,6 +240,13 @@ Yes.
 * [SendClientLanguageMessageToAll()](#sendclientlanguagemessagetoall)
 * [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
 * [GameLanguageTextForAll()](#gamelanguagetextforall)
+* [CreatePlayerLanguageTextDraw()](#createplayerlanguagetextdraw)
+* [PlayerTextDrawLanguageString()](#playertextdrawlanguagestring)
+* [TextDrawLanguageStringForPlayer()](#textdrawlanguagestringforplayer)
+* [SendPlayerLanguageMessageToAll()](#sendplayerlanguagemessagetoall)
+* [SendPlayerLanguageMessageToPlayer()](#sendplayerlanguagemessagetoplayer)
+* [CreatePlayer3DLanguageTextLabel()](#createplayer3dlanguagetextlabel)
+* [UpdatePlayer3DLanguageTextLabelText()](#updateplayer3dlanguagetextlabeltext)
 * [OnPlayerSelectLanguage()](#onplayerselectlanguage)
 
 [To main index](#index)
@@ -531,6 +554,178 @@ Nothing
 
 **Related functions/callbacks**  
 * [GameLanguageTextForPlayer()](#gamelanguagetextforplayer)
+
+[To index](#functions-and-callbacks)
+
+---
+#### CreatePlayerLanguageTextDraw
+`PlayerText:CreatePlayerLanguageTextDraw(const playerid, Float:x, Float:y, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Creates a player-textdraw using the language system
+
+**Parameters**  
+`playerid`: Player to create the textdraw for  
+`Float:x`: X-coordinate  
+`Float:y`: Y-coordinate  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+PlayerText:The ID of the created textdraw
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [PlayerTextDrawLanguageString()](#playertextdrawlanguagestring)
+* [TextDrawLanguageStringForPlayer()](#textdrawlanguagestringforplayer)
+
+[To index](#functions-and-callbacks)
+
+---
+#### PlayerTextDrawLanguageString
+`PlayerTextDrawLanguageString(const playerid, PlayerText:textid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Sets a player-textdraw string using the language system
+
+**Parameters**  
+`playerid`: Player who owns the textdraw  
+`textid`:  The PlayerTextDraw to set the string for  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+Always returns 1
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [CreatePlayerLanguageTextDraw()](#createplayerlanguagetextdraw)
+* [TextDrawLanguageStringForPlayer()](#textdrawlanguagestringforplayer)
+
+[To index](#functions-and-callbacks)
+
+---
+#### TextDrawLanguageStringForPlayer
+`TextDrawLanguageStringForPlayer(const playerid, Text:textid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Sets a textdraw string for a specific player using the language system
+
+**Parameters**  
+`playerid`: Player to show the textdraw to  
+`textid`: The TextDraw to set the string for  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+
+**Returns**  
+Always returns 1
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [CreatePlayerLanguageTextDraw()](#createplayerlanguagetextdraw)
+* [PlayerTextDrawLanguageString()](#playertextdrawlanguagestring)
+
+[To index](#functions-and-callbacks)
+
+---
+#### SendPlayerLanguageMessageToAll
+`bool:SendPlayerLanguageMessageToAll(const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Sends a message in the name of a player to all other players on the server using the language system
+
+**Parameters**  
+`senderid`: The ID of the sender. If invalid, the message will not be sent  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)  
+
+**Returns**  
+Always returns true
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [SendPlayerLanguageMessageToPlayer()](#sendplayerlanguagemessagetoplayer)
+
+[To index](#functions-and-callbacks)
+
+---
+#### SendPlayerLanguageMessageToPlayer
+`bool:SendPlayerLanguageMessageToPlayer(const playerid, const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Sends a message in the name of a player to another player on the server using the language system
+
+**Parameters**  
+`playerid`: The ID of the player who will receive the message  
+`senderid`: The ID of the sender. If invalid, the message will not be sent  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)  
+
+**Returns**  
+Output of SendPlayerMessageToPlayer(), thus **true**: function executed successfully or **false**: Failed to execute (specified player does not exist)
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [SendPlayerLanguageMessageToAll()](#sendplayerlanguagemessagetoall)
+
+[To index](#functions-and-callbacks)
+
+---
+#### CreatePlayer3DLanguageTextLabel
+`PlayerText3D:CreatePlayer3DLanguageTextLabel(const playerid, const string:table[], const string:identifier[], const colour, const Float:x, const Float:y, const Float:z, const Float:drawDistance, const parentPlayerid = INVALID_PLAYER_ID, const parentVehicleid = INVALID_VEHICLE_ID, const bool:testLOS = false, OPEN_MP_TAGS:...)`  
+Creates a 3D text label for a specific player using the language system
+
+**Parameters**  
+`playerid`: The ID of the player to create the 3D text label for  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`colour`: The text colour  
+`Float:x`: X coordinate (or offset if attached)  
+`Float:y`: Y coordinate (or offset if attached)  
+`Float:z`: Z coordinate (or offest if attached)  
+`Float:drawDistance`: The distance where you are able to see the 3D Text Label  
+`parentPlayerid`: (optional) The player you want to attach the 3D Text Label to (None (and default): INVALID_PLAYER_ID)  
+`parentVehicleid`: (optional) The vehicle you want to attach the 3D Text Label to (None (and default): INVALID_VEHICLE_ID)  
+`testLOS`: Test the line of sight (true) so this text can't be seen through walls - or not (false) (default: false)  
+`OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+
+**Returns**  
+Output of CreatePlayer3DTextLabel(): ID of the newly created label or INVALID_3DTEXT_ID if the Player 3D Text Label limit (MAX_3DTEXT_PLAYER) was reached
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [UpdatePlayer3DLanguageTextLabelText()](#updateplayer3dlanguagetextlabeltext)
+
+[To index](#functions-and-callbacks)
+
+---
+#### UpdatePlayer3DLanguageTextLabelText
+`bool:UpdatePlayer3DLanguageTextLabelText(const playerid, const PlayerText3D:textid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)`  
+Updates a player 3D Text Label's text and colour using the language system
+
+**Parameters**  
+`playerid`: The ID of the player for which the 3D Text Label was created  
+`textid`: The 3D Text Label you want to update  
+`colour`: The color the 3D Text Label should have from now on  
+`table[]`: Table to get the content from  
+`identifier[]`: Identifier from given table to retrieve  
+`OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)  
+
+**Returns**  
+Always returns true
+
+**Notes**  
+None
+
+**Related functions/callbacks**  
+* [CreatePlayer3DLanguageTextLabel()](#createplayer3dlanguagetextlabel)
 
 [To index](#functions-and-callbacks)
 

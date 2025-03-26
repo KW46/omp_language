@@ -99,6 +99,9 @@ hook OnPlayerConnect(playerid)
 
     spFailedLogins[playerid] = 0;
     
+    //Note that this include does not reset player's language data when a player disconnects.
+    //Therefor, the following textdraw will be shown to the player using the language the previous player with that playerid selected
+    //If no player joined with that playerid previously, the server's default language (LANGUAGE_DEFAULT - or if that doesn't exist, language with ID 0) will be used    
     spWelcomeTextDraw[playerid] = CreatePlayerLanguageTextDraw(playerid, 380.0, 341.15, "user-auth", "WELCOME_MESSAGE", playerName);
     PlayerTextDrawLetterSize(playerid, spWelcomeTextDraw[playerid], 0.58, 2.42);
     PlayerTextDrawAlignment(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_ALIGN:2);
@@ -114,8 +117,7 @@ hook OnPlayerConnect(playerid)
 
     PlayerTextDrawShow(playerid, spWelcomeTextDraw[playerid]);
 
-    
-    
+    //See previous comment. Same thus counts for this join message
     SendClientLanguageMessageToAll(-1, "global", "PLAYER_JOIN", playerName, playerid);
 
     Player_SelectLanguage(playerid);

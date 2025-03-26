@@ -6,7 +6,10 @@
  *  \___/|_| |_| |_| .__/ |___| |_|\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
  *                 |_|                         |___/             |___/      
  *  
- !  - omp_language include created and maintained by KW46 (https://github.com/KW46) (v1.05) 
+ !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.05) 
+ !  - Contributors:
+        @NebulaGB (WookieLeaks) (#17)
+        @itsneufox (newfox) (#21)
  */
 
 
@@ -36,6 +39,46 @@
         #if defined _INC_y_dialog
             #tryinclude <YSI_Coding\y_inline>
         #endif
+    #endif
+#endif
+
+#if defined LANGUAGE_SORT_LANGUAGES
+    #undef LANGUAGE_SORT_LANGUAGES
+
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort\md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort/md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #warning Failed to include md-sort.inc : Languages will not be sorted!
+        #define LANGUAGE_SORT_LANGUAGES(0)
+    #else
+        #define LANGUAGE_SORT_LANGUAGES (1)
+    #endif
+#else
+    #define LANGUAGE_SORT_LANGUAGES (0)
+#endif
+
+#if LANGUAGE_SORT_LANGUAGES
+    #if !defined LANGUAGE_SORT_COUNTRY_NAME && !defined LANGUAGE_SORT_COUNTRY_CODE
+        #error LANGUAGE_SORT_LANGUAGES defined, please also define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE
+    #elseif defined LANGUAGE_SORT_COUNTRY_NAME && defined LANGUAGE_SORT_COUNTRY_CODE
+        #error Define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE, not both
+    #else
+        #if defined LANGUAGE_SORT_COUNTRY_NAME
+            #define _LANGUAGE_SORT_BY E_LANG_NAME
+        #else
+            #define _LANGUAGE_SORT_BY E_LANG_CODE
+        #endif
+    #endif
+
+    #if !defined LANGUAGE_SORT_METHOD
+        #define LANGUAGE_SORT_METHOD SORT_ASC
     #endif
 #endif
 
@@ -119,6 +162,9 @@ static bool:Language_ScanLanguages()
         dir:languagesDir,
         dirItem[35],
         dirItemType,
+        #if LANGUAGE_SORT_LANGUAGES
+            languages[MAX_LANGUAGES][E_LANG_DATA],
+        #endif
         languagesAdded
     ;
     languagesDir = dir_open("scriptfiles/languages");
@@ -142,16 +188,39 @@ static bool:Language_ScanLanguages()
 
         for (new i = 0; i < LANGUAGES_MAX; i++)
         {
-            if (IsNull(sLanguages[i][E_LANG_CODE]))
-            {
-                format(sLanguages[i][E_LANG_CODE], 3, langCode);
-                format(sLanguages[i][E_LANG_NAME], 32, langName);
-                languagesAdded++;
-                break;
-            }
+            #if LANGUAGE_SORT_LANGUAGES
+                if (IsNull(languages[i][E_LANG_CODE]))
+                {
+                    format(languages[i][E_LANG_CODE], 3, langCode);
+                    format(languages[i][E_LANG_NAME], 32, langName);
+                    languagesAdded++;
+                    break;
+                }
+            #else
+                if (IsNull(sLanguages[i][E_LANG_CODE]))
+                {
+                    format(sLanguages[i][E_LANG_CODE], 3, langCode);
+                    format(sLanguages[i][E_LANG_NAME], 32, langName);
+                    languagesAdded++;
+                    break;
+                }
+            #endif
         }
     }
     dir_close(languagesDir);
+
+    #if LANGUAGE_SORT_LANGUAGES
+        SortDeepArray(languages, _LANGUAGE_SORT_BY, .order = LANGUAGE_SORT_METHOD);
+
+        for (new i = 0, j = -1; i < MAX_LANGUAGES; i++)
+        {
+            if (!IsNull(languages[i][E_LANG_CODE]))
+            {
+                format(sLanguages[++j][E_LANG_CODE], 3, languages[i][E_LANG_CODE]);
+                format(sLanguages[j][E_LANG_NAME], 32, languages[i][E_LANG_NAME]);
+            }
+        }
+    #endif
     return true;
 }
 
@@ -176,8 +245,10 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
     format(fullPath, sizeof(fullPath), "languages/%s_%s%s%s/%s", sLanguages[languageId][E_LANG_CODE], sLanguages[languageId][E_LANG_NAME], (IsNull(subDir) ? "" : "/"), subDir, file);
     format(tableName, sizeof(tableName), "%s%s%s", subDir, (IsNull(subDir) ? "" : "-"), file);
 
-    for (new i = strlen(tableName); i > 0; i--){
-        if (tableName[i] == '.'){
+    for (new i = strlen(tableName); i > 0; i--)
+    {
+        if (tableName[i] == '.')
+        {
             strdel(tableName, i, strlen(tableName));
             break;
         }
@@ -206,9 +277,8 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
 
-        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH){
+        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH)
             PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
-        }
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
@@ -549,18 +619,28 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
     //Returns: (bool) Always returns true
 
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+    //Note that I didn't use array size 128 (which is limit for text output in open.mp)
+    //Some people may have a script that breaks longer messages in multiple messages, so that's why
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
+        #if defined _INC_y_va
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(3)));
+        #else
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
+        #endif
+    }
+
     #if defined _INC_y_iterate
         foreach (new i : Player)
     #else
         for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
     #endif
-    {
-        #if defined _INC_y_va
-            SendClientMessage(i, colour, Player_Language_Get(i, table, identifier, ___(3)));
-        #else
-            SendClientMessage(i, colour, Player_Language_Get(i, table, identifier));
-        #endif
-    }
+            SendClientMessage(i, colour, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))]);
     return true;
 }
 
@@ -576,13 +656,14 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: output of PlayerTextDrawSetString(), thus 1 on success, 0 on failure
+    //Returns: Always returns 1
     
     #if defined _INC_y_va
-        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier, ___(4)));
+        PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier, ___(4)));
     #else
-        return PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
+        PlayerTextDrawSetString(playerid, textid, Player_Language_Get(playerid, table, identifier));
     #endif
+    return 1;
 }
 
 #if defined _INC_y_va
@@ -597,13 +678,14 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     //  `table[]`: Table to get the content from
     //  `identifier[]`: Identifier from given table to retrieve
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: output of TextDrawSetStringForPlayer(), thus 1 on success, 0 on failure
+    //Returns: Always returns 1
     
     #if defined _INC_y_va
-        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier, ___(4)));
+        TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier, ___(4)));
     #else
-        return TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
+        TextDrawSetStringForPlayer(textid, playerid, Player_Language_Get(playerid, table, identifier));
     #endif
+    return 1;
 }
 
 #if defined _INC_y_va
@@ -723,18 +805,139 @@ stock void:Player_SelectLanguage(const playerid)
     //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
     //Returns: Nothing
 
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+    //Default LANGUAGE_MAX_CONTENT_LENGTH may be too much for a gametext.
+    //Since I couldn't find limits on gametext lengths (except using colour codes beyond the 255th character may crash a client), just going with LANGUAGE_MAX_CONTENT_LENGTH
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
+        #if defined _INC_y_va
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(4)));
+        #else
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
+        #endif
+    }
+
     #if defined _INC_y_iterate
         foreach (new i : Player)
     #else
         for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
     #endif
+            GameTextForPlayer(i, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))], time, style);
+}
+
+#if defined _INC_y_va
+    stock bool:SendPlayerLanguageMessageToAll(const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:SendPlayerLanguageMessageToAll(const senderid, const string:table[], const string:identifier[])
+#endif
+{
+    //Sends a message in the name of a player to all other players on the server using the language system
+    //  `senderid`: The ID of the sender. If invalid, the message will not be sent
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Always returns true
+
+    new fetchedData[LANGUAGES_MAX][LANGUAGE_MAX_CONTENT_LENGTH];
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
     {
+        if (IsNull(sLanguages[i][E_LANG_NAME]))
+            break;
+
         #if defined _INC_y_va
-            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style, ___(4));
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier, ___(3)));
         #else
-            GameTextForPlayer(i, Player_Language_Get(i, table, identifier), time, style);
+            format(fetchedData[i], LANGUAGE_MAX_CONTENT_LENGTH, Language_Get(sLanguages[i][E_LANG_CODE], table, identifier));
         #endif
     }
+
+    #if defined _INC_y_iterate
+        foreach (new i : Player)
+    #else
+        for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
+    #endif
+           SendPlayerMessageToPlayer(i, senderid, fetchedData[Language_GetIDFromData(Player_GetLanguage(i))]);    
+    return true;
+}
+
+#if defined _INC_y_va
+    stock bool:SendPlayerLanguageMessageToPlayer(const playerid, const senderid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:SendPlayerLanguageMessageToPlayer(const playerid, const senderid, const string:table[], const string:identifier[])
+#endif
+{
+    //Sends a message in the name of a player to another player on the server using the language system
+    //  `playerid`: The ID of the player who will receive the message.
+    //  `senderid`: The ID of the sender. If invalid, the message will not be sent
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Output of SendPlayerMessageToPlayer(), thus true: function executed successfully or false: Failed ot execute (specified player does not exist)
+
+    #if defined _INC_y_va
+        return SendPlayerMessageToPlayer(playerid, senderid, Player_Language_Get(playerid, table, identifier, ___(4)));
+    #else
+        return SendPlayerMessageToPlayer(playerid, senderid, Player_Language_Get(playerid, table, identifier));
+    #endif
+}
+
+//native PlayerText3D:CreatePlayer3DTextLabel(playerid, const text[], colour, Float:x, Float:y, Float:z, Float:drawDistance, parentPlayerid = INVALID_PLAYER_ID, parentVehicleid = INVALID_VEHICLE_ID, bool:testLOS = false, OPEN_MP_TAGS:...);
+//native bool:UpdatePlayer3DTextLabelText(playerid, PlayerText3D:textid, colour, const text[], OPEN_MP_TAGS:...);
+
+#if defined _INC_y_va
+    stock PlayerText3D:CreatePlayer3DLanguageTextLabel(const playerid, const string:table[], const string:identifier[], const colour, const Float:x, const Float:y, const Float:z, const Float:drawDistance, const parentPlayerid = INVALID_PLAYER_ID, const parentVehicleid = INVALID_VEHICLE_ID, const bool:testLOS = false, OPEN_MP_TAGS:...)
+#else
+    stock PlayerText3D:CreatePlayer3DLanguageTextLabel(const playerid, const string:table[], const string:identifier[], const colour, const Float:x, const Float:y, const Float:z, const Float:drawDistance, const parentPlayerid = INVALID_PLAYER_ID, const parentVehicleid = INVALID_VEHICLE_ID, const bool:testLOS = false)
+#endif
+{
+    //Creates a 3D text label for a specific player using the language system
+    //  `playerid`: The ID of the player to create the 3D text label for
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `colour`: The text colour
+    //  `Float:x`: X coordinate (or offset if attached)
+    //  `Float:y`: Y coordinate (or offset if attached)
+    //  `Float:z`: Z coordinate (or offest if attached)
+    //  `Float:drawDistance`: The distance where you are able to see the 3D Text Label
+    //  `parentPlayerid`: The player you want to attach the 3D Text Label to (None: INVALID_PLAYER_ID)
+    //  `parentVehicleid`: The vehicle you want to attach the 3D Text Label to (None: INVALID_VEHICLE_ID)
+    //  `testLOS`: Test the line of sight (true) so this text can't be seen through walls - or not (false)
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Output of CreatePlayer3DTextLabel(): ID of the newly created label or INVALID_3DTEXT_ID if the Player 3D Text Label limit (MAX_3DTEXT_PLAYER) was reached
+    
+    #if defined _INC_y_va
+        return CreatePlayer3DTextLabel(playerid, Player_Language_Get(playerid, table, identifier, ___(11)), colour, x, y, z, drawDistance, parentPlayerid, parentVehicleid, testLOS);
+    #else
+        return CreatePlayer3DTextLabel(playerid, Player_Language_Get(playerid, table, identifier), colour, x, y, z, drawDistance, parentPlayerid, parentVehicleid, testLOS);
+    #endif
+}
+
+#if defined _INC_y_va
+    stock bool:UpdatePlayer3DLanguageTextLabelText(const playerid, const PlayerText3D:textid, const colour, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock bool:UpdatePlayer3DLanguageTextLabelText(const playerid, const PlayerText3D:textid, const colour, const string:table[], const string:identifier[])
+#endif
+{
+    //Updates a player 3D Text Label's text and colour using the language system
+    //  `playerid`: The ID of the player for which the 3D Text Label was created
+    //  `textid`: The 3D Text Label you want to update
+    //  `colour`: The color the 3D Text Label should have from now on
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: Always return true
+
+    #if defined _INC_y_va
+        UpdatePlayer3DTextLabelText(playerid, textid, colour, Player_Language_Get(playerid, table, identifier, ___(5)));
+    #else
+        UpdatePlayer3DTextLabelText(playerid, textid, colour, Player_Language_Get(playerid, table, identifier));
+    #endif
+    return true;
 }
 
 /*-- Callbacks --*/
@@ -780,8 +983,9 @@ forward OnPlayerSelectedLanguage(playerid);
                 return 1;
             #endif        
         #endif
+    #else
+        return 1;
     #endif
-    return 1;
 }
 #if !defined _INC_y_hooks
     #if defined FILTERSCRIPT
