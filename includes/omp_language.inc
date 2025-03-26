@@ -39,6 +39,46 @@
     #endif
 #endif
 
+#if defined LANGUAGE_SORT_LANGUAGES
+    #undef LANGUAGE_SORT_LANGUAGES
+
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort\md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort/md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #tryinclude <md-sort>
+    #endif
+    #if !defined _INC_md_sort
+        #warning Failed to include md-sort.inc : Languages will not be sorted!
+        #define LANGUAGE_SORT_LANGUAGES(0)
+    #else
+        #define LANGUAGE_SORT_LANGUAGES (1)
+    #endif
+#else
+    #define LANGUAGE_SORT_LANGUAGES (0)
+#endif
+
+#if LANGUAGE_SORT_LANGUAGES
+    #if !defined LANGUAGE_SORT_COUNTRY_NAME && !defined LANGUAGE_SORT_COUNTRY_CODE
+        #error LANGUAGE_SORT_LANGUAGES defined, please also define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE
+    #elseif defined LANGUAGE_SORT_COUNTRY_NAME && defined LANGUAGE_SORT_COUNTRY_CODE
+        #error Define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE, not both
+    #else
+        #if defined LANGUAGE_SORT_COUNTRY_NAME
+            #define _LANGUAGE_SORT_BY E_LANG_NAME
+        #else
+            #define _LANGUAGE_SORT_BY E_LANG_CODE
+        #endif
+    #endif
+
+    #if !defined LANGUAGE_SORT_METHOD
+        #define LANGUAGE_SORT_METHOD SORT_ASC
+    #endif
+#endif
+
 #if !defined gLanguageColours
     #tryinclude <omp_language_colours>
 #endif
@@ -119,6 +159,9 @@ static bool:Language_ScanLanguages()
         dir:languagesDir,
         dirItem[35],
         dirItemType,
+        #if LANGUAGE_SORT_LANGUAGES
+            languages[MAX_LANGUAGES][E_LANG_DATA],
+        #endif
         languagesAdded
     ;
     languagesDir = dir_open("scriptfiles/languages");
@@ -142,16 +185,39 @@ static bool:Language_ScanLanguages()
 
         for (new i = 0; i < LANGUAGES_MAX; i++)
         {
-            if (IsNull(sLanguages[i][E_LANG_CODE]))
-            {
-                format(sLanguages[i][E_LANG_CODE], 3, langCode);
-                format(sLanguages[i][E_LANG_NAME], 32, langName);
-                languagesAdded++;
-                break;
-            }
+            #if LANGUAGE_SORT_LANGUAGES
+                if (IsNull(languages[i][E_LANG_CODE]))
+                {
+                    format(languages[i][E_LANG_CODE], 3, langCode);
+                    format(languages[i][E_LANG_NAME], 32, langName);
+                    languagesAdded++;
+                    break;
+                }
+            #else
+                if (IsNull(sLanguages[i][E_LANG_CODE]))
+                {
+                    format(sLanguages[i][E_LANG_CODE], 3, langCode);
+                    format(sLanguages[i][E_LANG_NAME], 32, langName);
+                    languagesAdded++;
+                    break;
+                }
+            #endif
         }
     }
     dir_close(languagesDir);
+
+    #if LANGUAGE_SORT_LANGUAGES
+        SortDeepArray(languages, _LANGUAGE_SORT_BY, .order = LANGUAGE_SORT_METHOD);
+
+        for (new i = 0, j = -1; i < MAX_LANGUAGES; i++)
+        {
+            if (!IsNull(languages[i][E_LANG_CODE]))
+            {
+                format(sLanguages[++j][E_LANG_CODE], 3, languages[i][E_LANG_CODE]);
+                format(sLanguages[j][E_LANG_NAME], 32, languages[i][E_LANG_NAME]);
+            }
+        }
+    #endif
     return true;
 }
 
