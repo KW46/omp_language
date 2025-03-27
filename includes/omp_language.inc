@@ -564,6 +564,27 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     return true;
 }
 
+#if defined _INC_y_va
+    stock string:Player_Language_Get(const playerid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
+#else
+    stock string:Player_Language_Get(const playerid, const string:table[], const string:identifier[])
+#endif
+{
+    //Retrieves a string from the language database, formats it (if needed) and returns it
+    //  `playerid`: Player to retrieve the string for (used to determine what language to fetch)
+    //  `table[]`: Table to get the content from
+    //  `identifier[]`: Identifier from given table to retrieve
+    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
+    //Returns: (string) Retrieved, formatted language string
+    //         If the language, table or identifier doesn't exist, it will return the following string: `[languageCode]table:identifier`, eg. `[en]global:SOME_IDENTIFIER`
+
+    #if defined _INC_y_va
+        return Language_Get(Player_GetLanguage(playerid), table, identifier, ___(3));
+    #else
+        return Language_Get(Player_GetLanguage(playerid), table, identifier);
+    #endif
+}
+
 stock void:Player_SelectLanguage(const playerid)
 {
     //Shows dialog with available languages. When selected, change player's language to that language.
@@ -625,27 +646,6 @@ stock void:Player_SelectLanguage(const playerid)
         Player_SetLanguage(playerid, sDefaultLanguage);
         CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
     }
-}
-
-#if defined _INC_y_va
-    stock string:Player_Language_Get(const playerid, const string:table[], const string:identifier[], OPEN_MP_TAGS:...)
-#else
-    stock string:Player_Language_Get(const playerid, const string:table[], const string:identifier[])
-#endif
-{
-    //Retrieves a string from the language database, formats it (if needed) and returns it
-    //  `playerid`: Player to retrieve the string for (used to determine what language to fetch)
-    //  `table[]`: Table to get the content from
-    //  `identifier[]`: Identifier from given table to retrieve
-    //  `OPEN_MP_TAGS:...` (optional) Used for formatting format specifiers used in retrieved content <!>ONLY WHEN USING Y_VA(YSI)
-    //Returns: (string) Retrieved, formatted language string
-    //         If the language, table or identifier doesn't exist, it will return the following string: `[languageCode]table:identifier`, eg. `[en]global:SOME_IDENTIFIER`
-
-    #if defined _INC_y_va
-        return Language_Get(Player_GetLanguage(playerid), table, identifier, ___(3));
-    #else
-        return Language_Get(Player_GetLanguage(playerid), table, identifier);
-    #endif
 }
 
 #if defined _INC_y_va
