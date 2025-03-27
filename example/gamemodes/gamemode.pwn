@@ -157,17 +157,16 @@ hook OnPlayerDeath(playerid, killerid, WEAPON:reason){
     GetPlayerPos(playerid, x, y, z);
 
     DestroyDeathLabel(playerid);
-    spDeaths[playerid]++;
 
-    if (spDeaths[playerid] < 10 || spDeaths[playerid] > 20){
-        if (spDeaths[playerid] % 1 == 0){
-            countStr = "COUNT_APPEND_FIRST";
+    new tmpDeaths = ++spDeaths[playerid];
+    if (tmpDeaths < 10 || tmpDeaths > 20){
+        while (tmpDeaths > 10){
+            tmpDeaths -= 10;
         }
-        else if (spDeaths[playerid] % 2 == 0 && spDeaths[playerid] % 10 != 0){
-            countStr = "COUNT_APPEND_SECOND";
-        }
-        else if (spDeaths[playerid] % 3 == 0 && spDeaths[playerid] % 10 != 0){
-            countStr = "COUNT_APPEND_THIRD";
+        switch (tmpDeaths){
+            case 1: countStr = "COUNT_APPEND_FIRST";
+            case 2: countStr = "COUNT_APPEND_SECOND";
+            case 3: countStr = "COUNT_APPEND_THIRD";
         }
     }
     spDeathsLabel[playerid] = CreatePlayer3DLanguageTextLabel(playerid, "user-global", "GRAVE_LABEL", 0xFF0000FF, x, y, z, 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, true, spDeaths[playerid], Player_Language_Get(playerid, "global", countStr));
