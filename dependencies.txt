@@ -5,3 +5,6 @@ Se8870/SA-MP-FileManager:1.5.1 #Originally from JaTochNietDan, this is a const c
 
 # Optional (but highly recommended)
 pawn-lang/YSI-Includes:v5.10.0006
+
+# Optional - only required if 1) LANGUAGE_SORT_LANGUAGES is defined and 2) YSI is not in include path (YSI has md-sort included)
+oscar-broman/md-sort

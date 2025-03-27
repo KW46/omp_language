@@ -1,0 +1,11 @@
+JOIN		{GREEN}Warm welcome to {WHITE}%s(%d){GREEN}!
+LEAVE0		{WHITE}%s(%d) {GREY}lost connection...
+LEAVE1		{WHITE}%s(%d) {ORANGE}left the server
+LEAVE2		{WHITE}%s(%d) {RED}has been kicked or banned!
+LEAVE3		{GREY}[Unknown leave reason] {WHITE}%s(%d)
+LEAVE4		{YELLOW}[RESTART] {WHITE}%s(%d)
+
+GRAVE_LABEL	This is where you died for the %d%s time
+DEATH_TEXT	~y~Aahh ...~n~You feel the sweet release of ~r~death
+KILLER_TEXT	~y~You certainly are the ~n~~g~Angel of Death~y~!
+SAD_MESSAGE Why did you kill me? :'(

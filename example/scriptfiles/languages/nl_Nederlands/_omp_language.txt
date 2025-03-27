@@ -3,4 +3,4 @@
 DIALOG_TITLE            {WHITE}Selecteer een taal
 DIALOG_BUTTON_SELECT    {WHITE}Selecteer
 DIALOG_BUTTON_CANCEL    {WHITE}Annuleren
-MSG_SELECTED_LANGUAGE   {WHITE}Je taal is veranderd naar {GREY}%s{WHITE}.
+MSG_SELECTED_LANGUAGE   {WHITE}Je gekozen taal is nu: {GREY}%s{WHITE}.

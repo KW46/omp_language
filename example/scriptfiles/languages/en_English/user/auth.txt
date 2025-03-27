@@ -1,7 +1,8 @@
-DIALOG_LOGIN_TITLE	    {WHITE}Login
+DIALOG_LOGIN_TITLE      {WHITE}Login
 # Very secure login system:
 DIALOG_LOGIN_CONTENT	{WHITE}Welcome back {GREY}%s{WHITE}!\nPlease enter your account password: {GREY}1234
-DIALOG_BUTTON_LOGIN	    {WHITE}Login
-DIALOG_BUTTON_QUIT	    {RED}Quit
-ERR_WRONG_PASSWORD	    {RED}[ERROR] {WHITE}Wrong password entered! (%d/%d)
-MESSAGE_LOGIN_OK	    {GREEN}[OK] {WHITE}Succesfully logged in!
+DIALOG_BUTTON_LOGIN     {WHITE}Login
+DIALOG_BUTTON_QUIT      {RED}Quit
+ERR_WRONG_PASSWORD      {RED}[ERROR] {WHITE}Wrong password entered! (%d/%d)
+MESSAGE_LOGIN_OK        {GREEN}[OK] {WHITE}Succesfully logged in!
+WELCOME_MESSAGE         Welcome back, %s!

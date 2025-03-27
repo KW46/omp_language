@@ -1,0 +1,11 @@
+JOIN		{GREEN}Warm welkom aan {WHITE}%s(%d){GREEN}!
+LEAVE0		{WHITE}%s(%d) {GREY}heeft verbinding verloren...
+LEAVE1		{WHITE}%s(%d) {ORANGE}heeft de server verlaten
+LEAVE2		{WHITE}%s(%d) {RED}is verbannen/eruit geschopt!
+LEAVE3		{GREY}[Onbekende verlaat reden] {WHITE}%s(%d)
+LEAVE4		{YELLOW}[SERVER HERSTART] {WHITE}%s(%d)
+
+GRAVE_LABEL	Dit is waar je dood bent gegaan voor de %d%s keer
+DEATH_TEXT	~y~Aahh ...~n~Je voelt de zoete bevrijding van ~r~de dood
+KILLER_TEXT	~y~Jij bent echt wel een ~n~~g~Klootzak~y~!
+SAD_MESSAGE Waarom heb jij mij dood gemaakt? :'(
