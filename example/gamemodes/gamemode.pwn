@@ -10,62 +10,69 @@
  !  - This gamemode demonstrates the functionality of the omp_language include.
  */
 
-//==============================================================================
-//                       INCLUDES & LIBRARY SETUP
-//==============================================================================
+/*-- Includes --*/
+#include <open.mp>      //Optional : Included by omp_language
+#include <sscanf2>      //Optional : Included by omp_language
+#include <FileManager>  //Optional : Included by omp_language
 
-#include <open.mp>
-#include <sscanf2>
-#include <FileManager>
-
-#include <YSI_Coding\y_hooks>
-#include <YSI_Coding\y_va>
-#include <YSI_Data\y_foreach>
-#include <YSI_Visual\y_dialog>
-
+#define LANGUAGE_SORT_LANGUAGES
+#define LANGUAGE_SORT_BY_NAME
 #include <omp_language>
 
-//==============================================================================
-//                        CONSTANTS & DEFINITIONS
-//==============================================================================
+#include <YSI_Coding\y_hooks>
+#include <YSI_Visual\y_commands>
 
-#define MAX_FAILED_LOGINS (3)
+/*-- Constants --*/
+#define MAX_FAILED_LOGINS   (5)
 
-//==============================================================================
-//                           STATIC VARIABLES
-//==============================================================================
+/*-- Variables --*/
+//Global
 
-static 
+//Local
+static
+    Text:sServerInfoTextDraw,
+    PlayerText:spWelcomeTextDraw[MAX_PLAYERS],
     spFailedLogins[MAX_PLAYERS],
-    PlayerText:spWelcomeTextDraw[MAX_PLAYERS]
+    spDeaths[MAX_PLAYERS],
+    PlayerText3D:spDeathsLabel[MAX_PLAYERS]
 ;
 
-//==============================================================================
-//                           DIALOG FUNCTIONS
-//==============================================================================
+/*-- Functions -- */
+//Global
+forward HidePlayerTextDraw(playerid, PlayerText:id);
+forward HideTextDraw(playerid, Text:id);
 
-static void:ShowLoginDialog(const playerid)
-{
+main() return;
+
+public HidePlayerTextDraw(playerid, PlayerText:id){
+    if (IsPlayerConnected(playerid)){
+        PlayerTextDrawHide(playerid, id);
+    }
+}
+
+public HideTextDraw(playerid, Text:id){
+    if (IsPlayerConnected(playerid)){
+        TextDrawHideForPlayer(playerid, id);
+    }
+}
+
+//Local
+static void:ShowLoginDialog(const playerid){
     new 
         playerName[MAX_PLAYER_NAME]
     ;
 
     GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
 
-    inline OnAttemptLogin(response, listitem, string:inputtext[])
-    {
+    inline OnAttemptLogin(response, listitem, string:inputtext[]){
         #pragma unused listitem
-        if (response)
-        {
-            if (!strcmp(inputtext, "1234"))
-            {
+        if (response){
+            if (!strcmp(inputtext, "1234")){
                 spFailedLogins[playerid] = 0;
                 SendClientLanguageMessage(playerid, -1, "user-auth", "MESSAGE_LOGIN_OK");
             }
-            else
-            {
-                if (++spFailedLogins[playerid] <= MAX_FAILED_LOGINS)
-                {
+            else{
+                if (++spFailedLogins[playerid] <= MAX_FAILED_LOGINS){
                     SendClientLanguageMessage(playerid, -1, "user-auth", "ERR_WRONG_PASSWORD", spFailedLogins[playerid], MAX_FAILED_LOGINS);
                     ShowLoginDialog(playerid);
                 }
@@ -85,24 +92,103 @@ static void:ShowLoginDialog(const playerid)
     );
 }
 
-//==============================================================================
-//                           PLAYER EVENT HOOKS
-//==============================================================================
+static void:DestroyDeathLabel(playerid){
+    if (spDeathsLabel[playerid] != INVALID_PLAYER_3DTEXT_ID){
+        DeletePlayer3DTextLabel(playerid, spDeathsLabel[playerid]);
+    }
+}
 
-hook OnPlayerConnect(playerid)
-{
-    new 
-        playerName[MAX_PLAYER_NAME]
-    ;
+/*-- Callbacks/hooks --*/
+hook OnGameModeInit(){
+    sServerInfoTextDraw = TextDrawCreate(320.0, 22.0, " ");
+    TextDrawLetterSize(sServerInfoTextDraw, 0.6, 1.8);
+    TextDrawAlignment(sServerInfoTextDraw, TEXT_DRAW_ALIGN:2);
 
-    GetPlayerName(playerid, playerName, MAX_PLAYER_NAME);
+    TextDrawColour(sServerInfoTextDraw, 0x906210FF);
+    TextDrawBackgroundColour(sServerInfoTextDraw, 0x000000AA);
+    TextDrawBoxColour(sServerInfoTextDraw, 0x00000000);
 
+    TextDrawSetShadow(sServerInfoTextDraw, 0);
+    TextDrawSetOutline(sServerInfoTextDraw, 1);
+    TextDrawFont(sServerInfoTextDraw, TEXT_DRAW_FONT:2);
+    TextDrawSetProportional(sServerInfoTextDraw, true);
+    TextDrawUseBox(sServerInfoTextDraw, true);
+    TextDrawTextSize(sServerInfoTextDraw, 200.0, 620.0);
+    return 1;
+}
+
+hook OnPlayerConnect(playerid){
+    new name[MAX_PLAYER_NAME];
+    GetPlayerName(playerid, name);
+
+    //Note that omp_language doesn't reset the player's language by default
+    //This example gamemode does (see Player_SetLanguage() in OnPlayerDisconnect)
+    //Not doing so will result in showing this message to the joining player in the language of the last player with the same playerid (if any)
+    SendClientLanguageMessageToAll(-1, "user-global", "JOIN", name, playerid);
+
+    Player_SelectLanguage(playerid);
+    return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason){
+    new name[MAX_PLAYER_NAME], leaveStr[7];
+    format(leaveStr, 7, "LEAVE%d", reason);
+    GetPlayerName(playerid, name);
+
+    SendClientLanguageMessageToAll(-1, "user-global", leaveStr, name, playerid);
+
+    PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
+    DestroyDeathLabel(playerid);
+    Player_SetLanguage(playerid, LANGUAGE_DEFAULT);
     spFailedLogins[playerid] = 0;
-    
-    //Note that this include does not reset player's language data when a player disconnects.
-    //Therefor, the following textdraw will be shown to the player using the language the previous player with that playerid selected
-    //If no player joined with that playerid previously, the server's default language (LANGUAGE_DEFAULT - or if that doesn't exist, language with ID 0) will be used    
-    spWelcomeTextDraw[playerid] = CreatePlayerLanguageTextDraw(playerid, 380.0, 341.15, "user-auth", "WELCOME_MESSAGE", playerName);
+    spDeaths[playerid] = 0;
+    return 1;
+}
+
+hook OnPlayerSpawn(playerid){
+    TextDrawShowForPlayer(playerid, sServerInfoTextDraw);
+    TextDrawLanguageStringForPlayer(playerid, sServerInfoTextDraw, "global", "INFO_OMP_LANGUAGE");
+    SetTimerEx("HideTextDraw", 7000, false, "dd", playerid, sServerInfoTextDraw);
+    return 1;
+}
+
+hook OnPlayerDeath(playerid, killerid, WEAPON:reason){
+    new Float:x, Float:y, Float:z, countStr[20] = "COUNT_APPEND_OTHER";
+    GetPlayerPos(playerid, x, y, z);
+
+    DestroyDeathLabel(playerid);
+    spDeaths[playerid]++;
+
+    if (spDeaths[playerid] < 10 || spDeaths[playerid] > 20){
+        if (spDeaths[playerid] % 1 == 0){
+            countStr = "COUNT_APPEND_FIRST";
+        }
+        else if (spDeaths[playerid] % 2 == 0 && spDeaths[playerid] % 10 != 0){
+            countStr = "COUNT_APPEND_SECOND";
+        }
+        else if (spDeaths[playerid] % 3 == 0 && spDeaths[playerid] % 10 != 0){
+            countStr = "COUNT_APPEND_THIRD";
+        }
+    }
+    spDeathsLabel[playerid] = CreatePlayer3DLanguageTextLabel(playerid, "user-global", "GRAVE_LABEL", 0xFF0000FF, x, y, z, 50.0, INVALID_PLAYER_ID, INVALID_VEHICLE_ID, true, spDeaths[playerid], Player_Language_Get(playerid, "global", countStr));
+
+    GameLanguageTextForPlayer(playerid, "user-global", "DEATH_TEXT", 5000, 3);
+
+    if (killerid != INVALID_PLAYER_ID){
+        GameLanguageTextForPlayer(killerid, "user-global", "KILLER_TEXT", 5000, 3);
+        SendDeathMessage(killerid, playerid, _:reason);
+        SendDeathMessage(playerid, killerid, _:reason);
+
+        SendPlayerLanguageMessageToPlayer(killerid, playerid, "user-global", "SAD_MESSAGE");
+    }
+    return 1;
+}
+
+hook OnPlayerSelectedLanguage(playerid){
+    new name[MAX_PLAYER_NAME];
+    GetPlayerName(playerid, name);
+
+    spWelcomeTextDraw[playerid] = CreatePlayerLanguageTextDraw(playerid, 380.0, 341.15, "user-auth", "WELCOME_MESSAGE", name);
     PlayerTextDrawLetterSize(playerid, spWelcomeTextDraw[playerid], 0.58, 2.42);
     PlayerTextDrawAlignment(playerid, spWelcomeTextDraw[playerid], TEXT_DRAW_ALIGN:2);
     PlayerTextDrawColour(playerid, spWelcomeTextDraw[playerid], 0xDDDDDBFF);
@@ -114,95 +200,15 @@ hook OnPlayerConnect(playerid)
     PlayerTextDrawSetProportional(playerid, spWelcomeTextDraw[playerid], true);
     PlayerTextDrawUseBox(playerid, spWelcomeTextDraw[playerid], true);
     PlayerTextDrawTextSize(playerid, spWelcomeTextDraw[playerid], 40.0, 460.0);
-
     PlayerTextDrawShow(playerid, spWelcomeTextDraw[playerid]);
-
-    //See previous comment. Same thus counts for this join message
-    SendClientLanguageMessageToAll(-1, "global", "PLAYER_JOIN", playerName, playerid);
-
-    Player_SelectLanguage(playerid);
-}
-
-hook OnPlayerDisconnect(playerid, reason)
-{
-    PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
-
-    return true;
-}
-
-forward HideWelcomeTextDraw(playerid);
-public HideWelcomeTextDraw(playerid)
-{
-    if (IsPlayerConnected(playerid))
-    {
-        PlayerTextDrawHide(playerid, spWelcomeTextDraw[playerid]);
-    }
-    return true;
-}
-
-hook OnPlayerSelectedLanguage(playerid)
-{
-    SetTimerEx("HideWelcomeTextDraw", 10000, false, "i", playerid);
+    SetTimerEx("HidePlayerTextDraw", 7000, false, "dd", playerid, spWelcomeTextDraw[playerid]);
 
     ShowLoginDialog(playerid);
+    return 1;
 }
 
-//==============================================================================
-//                           GAMEMODE EVENT HOOKS
-//==============================================================================
-
-new 
-    Text:gServerInfoTextDraw
-;
-
-hook OnGameModeInit()
-{
-    gServerInfoTextDraw = TextDrawCreate(320.0, 22.0, " ");
-    TextDrawLetterSize(gServerInfoTextDraw, 0.6, 1.8);
-    TextDrawAlignment(gServerInfoTextDraw, TEXT_DRAW_ALIGN:2);
-
-    TextDrawColour(gServerInfoTextDraw, 0x906210FF);
-    TextDrawBackgroundColour(gServerInfoTextDraw, 0x000000AA);
-    TextDrawBoxColour(gServerInfoTextDraw, 0x00000000);
-
-    TextDrawSetShadow(gServerInfoTextDraw, 0);
-    TextDrawSetOutline(gServerInfoTextDraw, 1);
-    TextDrawFont(gServerInfoTextDraw, TEXT_DRAW_FONT:2);
-    TextDrawSetProportional(gServerInfoTextDraw, true);
-    TextDrawUseBox(gServerInfoTextDraw, true);
-    TextDrawTextSize(gServerInfoTextDraw, 200.0, 620.0);
-
-    return true;
+/*-- Commands --*/
+@cmd() killme(const playerid, const string:params[], const help){
+    SetPlayerHealth(playerid, 0);
+    return 1;
 }
-
-forward HideServerInfoTextDraw(playerid);
-public HideServerInfoTextDraw(playerid)
-{
-    if (IsPlayerConnected(playerid))
-    {
-        TextDrawHideForPlayer(playerid, gServerInfoTextDraw);
-    }
-    return true;
-}
-
-hook OnPlayerSpawn(playerid)
-{
-    TextDrawShowForPlayer(playerid, gServerInfoTextDraw);
-
-    TextDrawLanguageStringForPlayer(playerid, gServerInfoTextDraw, "global", "SERVER_INFO");
-
-    SetTimerEx("HideServerInfoTextDraw", 10000, false, "i", playerid);
-
-    return true;
-}
-
-hook OnGameModeExit()
-{
-    TextDrawDestroy(gServerInfoTextDraw);
-
-    return true;
-}
-
-//==============================================================================
-//                              OMP_LANGUAGE
-//==============================================================================

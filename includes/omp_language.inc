@@ -65,12 +65,12 @@
 #endif
 
 #if LANGUAGE_SORT_LANGUAGES
-    #if !defined LANGUAGE_SORT_COUNTRY_NAME && !defined LANGUAGE_SORT_COUNTRY_CODE
-        #error LANGUAGE_SORT_LANGUAGES defined, please also define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE
-    #elseif defined LANGUAGE_SORT_COUNTRY_NAME && defined LANGUAGE_SORT_COUNTRY_CODE
-        #error Define either LANGUAGE_SORT_COUNTRY_NAME or LANGUAGE_SORT_COUNTRY_CODE, not both
+    #if !defined LANGUAGE_SORT_BY_NAME && !defined LANGUAGE_SORT_BY_CODE
+        #error LANGUAGE_SORT_LANGUAGES defined, please also define either LANGUAGE_SORT_BY_NAME or LANGUAGE_SORT_BY_CODE
+    #elseif defined LANGUAGE_SORT_BY_NAME && defined LANGUAGE_SORT_BY_CODE
+        #error Define either LANGUAGE_SORT_BY_NAME or LANGUAGE_SORT_BY_CODE, not both
     #else
-        #if defined LANGUAGE_SORT_COUNTRY_NAME
+        #if defined LANGUAGE_SORT_BY_NAME
             #define _LANGUAGE_SORT_BY E_LANG_NAME
         #else
             #define _LANGUAGE_SORT_BY E_LANG_CODE
@@ -766,7 +766,11 @@ stock void:Player_SelectLanguage(const playerid)
             );
         #endif
     }
-    else Player_SetLanguage(playerid, sDefaultLanguage);
+    else
+    {
+        Player_SetLanguage(playerid, sDefaultLanguage);
+        CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
+    }
 }
 
 #if defined _INC_y_va

@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.05 - 2025/03/26
+## v1.05 - 2025/03/27
 * Features
     * Allow sorting languages (see gamemode compile option: LANGUAGE_SORT_LANGUAGES) #22
     * PlayerTextDrawLanguageString(), TextDrawLanguageStringForPlayer(), CreatePlayerLanguageTextDraw() #21 (by @itsneufox)
@@ -9,6 +9,7 @@
 
 * Fixes
     * Unreachable code warning in On[FilterScript|GameMode]Init() when not using YSI #22
+    * OnPlayerSelectedLanguage() not being called if there's just one available language
 
 * Misc
     * Query db for each language instead of for each player in 'to all' functions #22

@@ -1,0 +1,11 @@
+JOIN		{GREEN}Boas-vindas calorosas ao {WHITE}%s(%d){GREEN}!
+LEAVE0		{WHITE}%s(%d) {GREY}perdeu a conexão...
+LEAVE1		{WHITE}%s(%d) {ORANGE}saiu do servidor
+LEAVE2		{WHITE}%s(%d) {RED}foi expulso ou banido!
+LEAVE3		{GREY}[Motivo de saída desconhecido] {WHITE}%s(%d)
+LEAVE4		{YELLOW}[REINICIAR] {WHITE}%s(%d)
+
+GRAVE_LABEL	Foi aqui que você morreu pela %d%s vez
+DEATH_TEXT	~y~Aahh ...~n~Você sente a doce libertação ~r~da morte
+KILLER_TEXT	~y~Você certamente é o ~n~~g~anjo da morte~y~!
+SAD_MESSAGE Por que você me matou? :'(

@@ -1,2 +1,6 @@
-PLAYER_JOIN	{YELLOW}[JOIN] {GREY}%s(%d) {WHITE}is zojuist de server binnen gekomen!
-SERVER_INFO     Draait met omp_language
+COUNT_APPEND_FIRST	e
+COUNT_APPEND_SECOND	e
+COUNT_APPEND_THIRD	e
+COUNT_APPEND_OTHER	e
+
+INFO_OMP_LANGUAGE	Server gebruikt omp_language

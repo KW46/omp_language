@@ -128,14 +128,14 @@ If not defined, omp_language will attempt to include both y_dialog and y_inline.
 
 `LANGUAGE_SORT_LANGUAGES`  
 readdir() does not guarantee ordering items. Those who want their languages ordered can define LANGUAGE_SORT_LANGUAGES.  
-When defined, you'll also have to define either LANGUAGE_SORT_COUNTRY_NAME **or** LANGUAGE_SORT_COUNTRY_CODE.  
+When defined, you'll also have to define either LANGUAGE_SORT_BY_NAME **or** LANGUAGE_SORT_BY_CODE.  
 This requires md-sort to be included (must be in either `(include_path)/md-sort.inc` or `(include_path)/md-sort/md-sort.inc`).  
 Note that YSI provides md-sort already.
 
-`LANGUAGE_SORT_COUNTRY_NAME`  
+`LANGUAGE_SORT_BY_NAME`  
 Define this to sort languages by language name when sorting languages.  
 
-`LANGUAGE_SORT_COUNTRY_CODE`  
+`LANGUAGE_SORT_BY_CODE`  
 Define this to sort languages by language code when sorting languages.  
 
 `LANGUAGE_SORT_METHOD`  

@@ -1,2 +1,6 @@
-PLAYER_JOIN	    {YELLOW}[JOIN] {GREY}%s(%d) {WHITE}acabou de entrar no servidor!
-SERVER_INFO     Rodando com omp_language
+COUNT_APPEND_FIRST	a
+COUNT_APPEND_SECOND	a
+COUNT_APPEND_THIRD	a
+COUNT_APPEND_OTHER	a
+
+INFO_OMP_LANGUAGE	Servidor usa omp_language
