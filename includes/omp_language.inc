@@ -163,7 +163,7 @@ static bool:Language_ScanLanguages()
         dirItem[35],
         dirItemType,
         #if LANGUAGE_SORT_LANGUAGES
-            languages[MAX_LANGUAGES][E_LANG_DATA],
+            languages[LANGUAGES_MAX][E_LANG_DATA],
         #endif
         languagesAdded
     ;
@@ -212,7 +212,7 @@ static bool:Language_ScanLanguages()
     #if LANGUAGE_SORT_LANGUAGES
         SortDeepArray(languages, _LANGUAGE_SORT_BY, .order = LANGUAGE_SORT_METHOD);
 
-        for (new i = 0, j = -1; i < MAX_LANGUAGES; i++)
+        for (new i = 0, j = -1; i < LANGUAGES_MAX; i++)
         {
             if (!IsNull(languages[i][E_LANG_CODE]))
             {
