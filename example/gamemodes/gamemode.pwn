@@ -135,7 +135,7 @@ hook OnPlayerDisconnect(playerid, reason){
     format(leaveStr, 7, "LEAVE%d", reason);
     GetPlayerName(playerid, name);
 
-    SendClientLanguageMessageToAll(-1, "user-global", Player_Language_Get(playerid, "user-global", leaveStr), name, playerid);
+    SendClientLanguageMessageToAll(-1, "user-global", leaveStr, name, playerid);
 
     PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
     DestroyDeathLabel(playerid);
