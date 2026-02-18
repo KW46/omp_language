@@ -124,6 +124,11 @@
     #endif
 #endif
 
+#if defined LANGUAGE_PVAR_NAME
+    #error Compiler constant LANGUAGE_PVAR_NAME used by omp_language, please undefine
+#endif
+#define LANGUAGE_PVAR_NAME "__omp_language_selectedLanguage"
+
 #if !defined IsNull
     #define IsNull(%0) ((%0[(%0[0])=='\1'])=='\0'||(%0[0])==ucharmax+1)
 #endif
@@ -541,7 +546,14 @@ stock string:Player_GetLanguage(const playerid)
     if (!IsPlayerConnected(playerid))
         return sDefaultLanguage;
 
-    return IsNull(spLanguage[playerid]) ? sDefaultLanguage : spLanguage[playerid];
+    if (IsNull(spLanguage[playerid]))
+    {
+        if (GetPVarType(playerid, LANGUAGE_PVAR_NAME) != PLAYER_VARTYPE_STRING)
+            format(spLanguage[playerid], sDefaultLanguage);
+        else
+            GetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);
+    }
+    return spLanguage[playerid];
 }
 
 stock bool:Player_SetLanguage(const playerid, const string:language[])
@@ -561,6 +573,7 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     new languageCode[3], languageName[1];
     Language_GetDataFromID(languageId, languageCode, languageName);
     format(spLanguage[playerid], sizeof(spLanguage[]), languageCode);
+    SetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);
     return true;
 }
 
