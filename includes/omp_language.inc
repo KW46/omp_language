@@ -950,7 +950,7 @@ forward OnPlayerSelectedLanguage(playerid);
 #if defined _INC_y_hooks
     hook OnScriptInit()
 #else
-    #if defined FITERSCRIPT
+    #if defined FILTERSCRIPT
         public OnFilterScriptInit()
     #else
         public OnGameModeInit()
