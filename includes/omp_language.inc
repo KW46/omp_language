@@ -352,6 +352,13 @@ static DB:LanguageDB_Open()
     return sLanguageDBHandle;
 }
 
+forward __OnPlayerChangeLanguage(playerid);
+public __OnPlayerChangeLanguage(playerid)
+{
+    //Called by Player_SetLanguage to make sure all scripts using omp_language update a player's language
+    GetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);
+}
+
 //Global functions
 Language_Count()
 {
@@ -487,6 +494,12 @@ bool:LanguageDB_Build()
         Print("===== Language database built =====");
     #endif
 
+    #if defined _INC_y_iterate
+        foreach (new i : Player)
+    #else
+        for (new i = 0; i < MAX_PLAYERS; i++) if (IsPlayerConnected(i))
+    #endif
+            DeletePVar(i, LANGUAGE_PVAR_NAME);
     return true;
 }
 
@@ -574,6 +587,7 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     Language_GetDataFromID(languageId, languageCode, languageName);
     format(spLanguage[playerid], sizeof(spLanguage[]), languageCode);
     SetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);
+    CallRemoteFunction("__OnPlayerChangeLanguage", "d", playerid);
     return true;
 }
 
