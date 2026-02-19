@@ -18,6 +18,13 @@
 #endif
 #define _INC_omp_language
 
+#if !defined __PawnBuild
+	#error omp_language requires compiler version 3.10.11
+#endif
+#if __PawnBuild != 11
+	#error omp_language requires compiler version 3.10.11
+#endif
+
 /*-- Includes --*/
 #include <open.mp>
 #include <sscanf2>
