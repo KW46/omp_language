@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.06 - 2026/02/19
+* Features
+    * Sync player language between multiple scripts #28
+
+* Fixes
+    * OnDialogResponse not being hooked when y_hooks is enabled but y_dialog/y_inline isn't #31
+    * Seperate dialog ID for filterscripts #30
+    * Dumb typo (FITERSCRIPT -> FILTERSCRIPT)
+
+* Misc
+    * Prevent compiling if compiler is not version 3.10.11 #26 #27
+
 ## v1.05 - 2025/03/27
 * Features
     * Allow sorting languages (see gamemode compile option: LANGUAGE_SORT_LANGUAGES) #22

@@ -94,7 +94,7 @@ Default value if not defined: `"languages.db"`
 `DIALOG_SELECT_LANGUAGE`  
 If YSI is not used (or at least if y_dialog and y_inline are not used), the default `ShowPlayerDialog()` and `OnDialogResponse()` are used  (instead of `Dialog_ShowCallBack()` and an inline on dialog response callback).  
 Since those require a dialog ID, this sets that dialog ID. Only effective if y_dialog or y_inline is not included.  
-Default value if not defined: `(1)`
+Default value if not defined: `(1)` for gamemodes, `(2)` for filterscripts (`FILTERSCRIPT` must be defined)
 
 `LANGUAGE_NO_BUILD_MESSAGE`  
 By default, when the language database is built some messages are printed:
@@ -215,7 +215,7 @@ for (new i = 0, j = Language_Count(); i < j; i++)
 
 For some more examples, see the example directory in this repository.
 
-[To index](#how-to-use)
+[To index](#how-to-use)  
 ---
 ## Should I use YSI?
 Yes.  
@@ -731,7 +731,7 @@ None
 
 ---
 #### OnPlayerSelectLanguage
-`OnPlayerSelectLanguage(playerid)`
+`OnPlayerSelectLanguage(playerid)`  
 Callback that is called after a player changed their language from the dialog
 
 **Parameters**  

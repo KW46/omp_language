@@ -20,7 +20,7 @@
 #define LANGUAGE_NO_YSI
 #define LANGUAGE_SORT_LANGUAGES
 #define LANGUAGE_SORT_BY_NAME
-//#define DIALOG_SELECT_LANGUAGE  (1) //1 is the default dialog ID used by Player_SelectLanguage(). Can be changed
+//#define DIALOG_SELECT_LANGUAGE  (1) //1 is the default dialog ID used by Player_SelectLanguage() (or 2 if it's a filterscript). Can be changed
 #include <omp_language>
 
 /*-- Constants --*/
