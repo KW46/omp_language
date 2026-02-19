@@ -12,8 +12,9 @@
 
 * Misc
     * Prevent compiling if compiler is not version 3.10.11 #26 #27
-    * OnPlayerSelectedLanguage() now has response parameter (see documentation README) #25
+    * OnPlayerSelectLanguage() now has response parameter (see documentation README) #25
     * Selected player language resets when player leaves the server
+    * OnPlayerSelectedLanguage() -> OnPlayerSelectLanguage() (mixed those up in docs/code)
 
 ## v1.05 - 2025/03/27
 * Features

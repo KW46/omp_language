@@ -183,7 +183,12 @@ hook OnPlayerDeath(playerid, killerid, WEAPON:reason){
     return 1;
 }
 
-hook OnPlayerSelectedLanguage(playerid){
+hook OnPlayerSelectLanguage(playerid, response){
+    if (!response){
+        Player_SelectLanguage(playerid);
+        return 1;
+    }
+    
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name);
 

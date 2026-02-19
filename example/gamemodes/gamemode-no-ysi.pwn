@@ -223,7 +223,12 @@ public OnPlayerDeath(playerid, killerid, WEAPON:reason){
     return 1;
 }
 
-public OnPlayerSelectedLanguage(playerid){
+public OnPlayerSelectLanguage(playerid, response){
+    if (!response){
+        Player_SelectLanguage(playerid);
+        return 1;
+    }
+
     new name[MAX_PLAYER_NAME], tdStr[64];
     GetPlayerName(playerid, name);
 

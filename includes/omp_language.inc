@@ -952,7 +952,7 @@ stock void:Player_SelectLanguage(const playerid)
                     Player_SetLanguage(playerid, languageCode);
                     SendClientLanguageMessage(playerid, -1, "_omp_language", "MSG_SELECTED_LANGUAGE", languageName);
                 }
-                CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, response);
+                CallRemoteFunction("OnPlayerSelectLanguage", "dd", playerid, response);
             }
 
             Dialog_ShowCallback(
@@ -979,12 +979,12 @@ stock void:Player_SelectLanguage(const playerid)
     else
     {
         Player_SetLanguage(playerid, sDefaultLanguage);
-        CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, -1);
+        CallRemoteFunction("OnPlayerSelectLanguage", "dd", playerid, -1);
     }
 }
 
 /*-- Callbacks --*/
-forward OnPlayerSelectedLanguage(playerid, response);
+forward OnPlayerSelectLanguage(playerid, response);
 
 #if defined _INC_y_hooks
     hook OnScriptInit()
@@ -1076,7 +1076,7 @@ forward OnPlayerSelectedLanguage(playerid, response);
                     SendClientMessage(playerid, -1, str);
                 #endif
             }
-            CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, response);
+            CallRemoteFunction("OnPlayerSelectLanguage", "dd", playerid, response);
             #if !defined _INC_y_hooks
                 return 1;
             #else
