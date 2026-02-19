@@ -24,7 +24,7 @@
 #include <omp_language>
 
 /*-- Constants --*/
-#define DIALOG_LOGIN        (2) //2, because DIALOG_SELECT_LANGUAGE is already 1
+#define DIALOG_LOGIN        (3) //2, because DIALOG_SELECT_LANGUAGE is already 1 (gamemodes) or 2 (filterscripts)
 #define MAX_FAILED_LOGINS   (5)
 
 /*-- Variables --*/
