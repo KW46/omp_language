@@ -3,6 +3,7 @@
 ## v1.06 - 2026/02/19
 * Features
     * Sync player language between multiple scripts #28
+    * Player_HasSelectedLanguage() #25
 
 * Fixes
     * OnDialogResponse not being hooked when y_hooks is enabled but y_dialog/y_inline isn't #31
@@ -11,6 +12,8 @@
 
 * Misc
     * Prevent compiling if compiler is not version 3.10.11 #26 #27
+    * OnPlayerSelectedLanguage() now has response parameter (see documentation README) #25
+    * Selected player language resets when player leaves the server
 
 ## v1.05 - 2025/03/27
 * Features

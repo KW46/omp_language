@@ -576,21 +576,29 @@ stock bool:Player_SetLanguage(const playerid, const string:language[])
     return true;
 }
 
+stock bool:Player_HasSelectedLanguage(const playerid)
+{
+    //Checks if a player selected a language
+    //  `playerid`: Player to check
+    //Returns: (bool) true: Player has selected a language | false: Player did not select a language
+    return !IsNull(spLanguage[playerid]);
+}
+
 stock string:Player_GetLanguage(const playerid)
 {
     //Retrieves the language of a player
     //  `playerid`: Player to get the language from
-    //Returns: (string) Language code of player, or the server's default language.
+    //Returns: (string) Language code of player, or the server's default language if no language was selected yet.
 
     if (!IsPlayerConnected(playerid))
         return sDefaultLanguage;
 
     if (IsNull(spLanguage[playerid]))
     {
-        if (GetPVarType(playerid, LANGUAGE_PVAR_NAME) != PLAYER_VARTYPE_STRING)
-            Player_SetLanguage(playerid, sDefaultLanguage);
+        if (GetPVarType(playerid, LANGUAGE_PVAR_NAME) == PLAYER_VARTYPE_STRING)
+            GetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);
         else
-            GetPVarString(playerid, LANGUAGE_PVAR_NAME, spLanguage[playerid]);        
+            return sDefaultLanguage;
     }
     return spLanguage[playerid];
 }
@@ -943,8 +951,8 @@ stock void:Player_SelectLanguage(const playerid)
                     Language_GetDataFromID(listitem, languageCode, languageName);
                     Player_SetLanguage(playerid, languageCode);
                     SendClientLanguageMessage(playerid, -1, "_omp_language", "MSG_SELECTED_LANGUAGE", languageName);
-                    CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
                 }
+                CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, response);
             }
 
             Dialog_ShowCallback(
@@ -971,12 +979,12 @@ stock void:Player_SelectLanguage(const playerid)
     else
     {
         Player_SetLanguage(playerid, sDefaultLanguage);
-        CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
+        CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, -1);
     }
 }
 
 /*-- Callbacks --*/
-forward OnPlayerSelectedLanguage(playerid);
+forward OnPlayerSelectedLanguage(playerid, response);
 
 #if defined _INC_y_hooks
     hook OnScriptInit()
@@ -1067,8 +1075,8 @@ forward OnPlayerSelectedLanguage(playerid);
                     format(str, sizeof(str), Player_Language_Get(playerid, "_omp_language", "MSG_SELECTED_LANGUAGE"), languageName);
                     SendClientMessage(playerid, -1, str);
                 #endif
-                CallLocalFunction("OnPlayerSelectedLanguage", "d", playerid);
             }
+            CallRemoteFunction("OnPlayerSelectedLanguage", "dd", playerid, response);
             #if !defined _INC_y_hooks
                 return 1;
             #else
@@ -1096,5 +1104,35 @@ forward OnPlayerSelectedLanguage(playerid);
         #if defined OMPLanguage_OnDialogResponse
             forward OMPLanguage_OnDialogResponse(playerid, dialogid, response, listitem, inputtext[]);
         #endif
+    #endif
+#endif
+
+#if defined _INC_y_hooks
+    hook OnPlayerDisconnect(playerid, reason)
+#else
+    public OnPlayerDisconnect(playerid, reason)
+#endif
+{
+    spLanguage[playerid][0] = EOS;
+
+    #if !defined _INC_y_hooks
+        #if defined OMPLanguage_OnPlayerDisconnect
+            return OMPLanguage_OnPlayerDisconnect(playerid, reason);
+        #else
+            return 1;
+        #endif
+    #else
+        return 1;
+    #endif
+}
+#if !defined _INC_y_hooks
+    #if defined _ALS_OnPlayerDisconnect
+        #undef OnPlayerDisconnect
+    #else
+        #define _ALS_OnPlayerDisconnect
+    #endif
+    #define OnPlayerDisconnect OMPLanguage_OnPlayerDisconnect
+    #if defined OMPLanguage_OnPlayerDisconnect
+        forward OMPLanguage_OnPlayerDisconnect(playerid, reason);
     #endif
 #endif
