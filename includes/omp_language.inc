@@ -34,6 +34,11 @@
     #if !defined LANGUAGE_NO_YSI_HOOKS
         #tryinclude <YSI_Coding\y_hooks>
     #endif
+    #if defined _INC_y_hooks
+        #if UNIQUE_SYMBOL == 1 //OnPlayerDisconnect@01 already used by YSI, prevent compile error by simply re-including y_hooks
+            #include <YSI_Coding\y_hooks>
+        #endif
+    #endif
     #if !defined LANGUAGE_NO_YSI_VA
         #tryinclude <YSI_Coding\y_va>
     #endif
