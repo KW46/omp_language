@@ -235,6 +235,7 @@ Yes.
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SetLanguage()](#player_setlanguage)
 * [Player_SelectLanguage()](#player_selectlanguage)
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)
 * [Player_Language_Get()](#player_language_get)
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
 * [SendClientLanguageMessageToAll()](#sendclientlanguagemessagetoall)
@@ -464,6 +465,8 @@ None
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SetLanguage()](#player_setlanguage)
 * [Player_SelectLanguage()](#player_selectlanguage)
+
+[To index](#functions-and-callbacks)
 
 ---
 #### Player_Language_Get
