@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.06 - 2026/02/19
+## v1.06 - 2026/02/20
 * Features
     * Sync player language between multiple scripts #28
     * Player_HasSelectedLanguage() #25
