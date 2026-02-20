@@ -120,10 +120,6 @@ hook OnGameModeInit(){
 hook OnPlayerConnect(playerid){
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name);
-
-    //Note that omp_language doesn't reset the player's language by default
-    //This example gamemode does (see Player_SetLanguage() in OnPlayerDisconnect)
-    //Not doing so will result in showing this message to the joining player in the language of the last player with the same playerid (if any)
     SendClientLanguageMessageToAll(-1, "user-global", "JOIN", name, playerid);
 
     Player_SelectLanguage(playerid);
@@ -134,12 +130,10 @@ hook OnPlayerDisconnect(playerid, reason){
     new name[MAX_PLAYER_NAME], leaveStr[7];
     format(leaveStr, 7, "LEAVE%d", reason);
     GetPlayerName(playerid, name);
-
     SendClientLanguageMessageToAll(-1, "user-global", leaveStr, name, playerid);
 
     PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
     DestroyDeathLabel(playerid);
-    Player_SetLanguage(playerid, LANGUAGE_DEFAULT);
     spFailedLogins[playerid] = 0;
     spDeaths[playerid] = 0;
     return 1;
@@ -183,7 +177,12 @@ hook OnPlayerDeath(playerid, killerid, WEAPON:reason){
     return 1;
 }
 
-hook OnPlayerSelectedLanguage(playerid){
+hook OnPlayerSelectLanguage(playerid, response){
+    if (!response){
+        Player_SelectLanguage(playerid);
+        return 1;
+    }
+    
     new name[MAX_PLAYER_NAME];
     GetPlayerName(playerid, name);
 

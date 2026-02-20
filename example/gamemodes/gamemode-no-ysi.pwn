@@ -20,11 +20,11 @@
 #define LANGUAGE_NO_YSI
 #define LANGUAGE_SORT_LANGUAGES
 #define LANGUAGE_SORT_BY_NAME
-//#define DIALOG_SELECT_LANGUAGE  (1) //1 is the default dialog ID used by Player_SelectLanguage(). Can be changed
+//#define DIALOG_SELECT_LANGUAGE  (1) //1 is the default dialog ID used by Player_SelectLanguage() (or 2 if it's a filterscript). Can be changed
 #include <omp_language>
 
 /*-- Constants --*/
-#define DIALOG_LOGIN        (2) //2, because DIALOG_SELECT_LANGUAGE is already 1
+#define DIALOG_LOGIN        (3) //3, because DIALOG_SELECT_LANGUAGE is already 1 (gamemodes) or 2 (filterscripts)
 #define MAX_FAILED_LOGINS   (5)
 
 /*-- Variables --*/
@@ -122,9 +122,6 @@ public OnPlayerConnect(playerid){
             SendClientMessage(i, -1, welcomeMessage[languageId]);
         }
     }
-    //Also note that omp_language doesn't reset the player's language by default
-    //This example gamemode does (see Player_SetLanguage() in OnPlayerDisconnect)
-    //Not doing so will result in showing this message to the joining player in the language of the last player with the same playerid (if any)
 
     Player_SelectLanguage(playerid);
     return 1;
@@ -154,7 +151,6 @@ public OnPlayerDisconnect(playerid, reason){
 
     PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
     DestroyDeathLabel(playerid);
-    Player_SetLanguage(playerid, LANGUAGE_DEFAULT);
     spFailedLogins[playerid] = 0;
     spDeaths[playerid] = 0;
     return 1;
@@ -223,7 +219,12 @@ public OnPlayerDeath(playerid, killerid, WEAPON:reason){
     return 1;
 }
 
-public OnPlayerSelectedLanguage(playerid){
+public OnPlayerSelectLanguage(playerid, response){
+    if (!response){
+        Player_SelectLanguage(playerid);
+        return 1;
+    }
+
     new name[MAX_PLAYER_NAME], tdStr[64];
     GetPlayerName(playerid, name);
 

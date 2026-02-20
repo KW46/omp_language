@@ -94,7 +94,7 @@ Default value if not defined: `"languages.db"`
 `DIALOG_SELECT_LANGUAGE`  
 If YSI is not used (or at least if y_dialog and y_inline are not used), the default `ShowPlayerDialog()` and `OnDialogResponse()` are used  (instead of `Dialog_ShowCallBack()` and an inline on dialog response callback).  
 Since those require a dialog ID, this sets that dialog ID. Only effective if y_dialog or y_inline is not included.  
-Default value if not defined: `(1)`
+Default value if not defined: `(1)` for gamemodes, `(2)` for filterscripts (`FILTERSCRIPT` must be defined)
 
 `LANGUAGE_NO_BUILD_MESSAGE`  
 By default, when the language database is built some messages are printed:
@@ -215,7 +215,7 @@ for (new i = 0, j = Language_Count(); i < j; i++)
 
 For some more examples, see the example directory in this repository.
 
-[To index](#how-to-use)
+[To index](#how-to-use)  
 ---
 ## Should I use YSI?
 Yes.  
@@ -235,6 +235,7 @@ Yes.
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SetLanguage()](#player_setlanguage)
 * [Player_SelectLanguage()](#player_selectlanguage)
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)
 * [Player_Language_Get()](#player_language_get)
 * [SendClientLanguageMessage()](#sendclientlanguagemessage)
 * [SendClientLanguageMessageToAll()](#sendclientlanguagemessagetoall)
@@ -350,7 +351,9 @@ None
 (bool) **true**: Language database created. **false**: Directory "scriptfiles/languages" does not exist
 
 **Notes**  
-<!> Returns true if no languages were added (which happens if directory "scriptfiles/languages" is empty or doesn't have valid language directory names)
+1: <!> Returns true if no languages were added (which happens if directory "scriptfiles/languages" is empty or doesn't have valid language directory names)  
+2: When running multiple scripts (ie gamemode, and one or more filterscripts): Using this function only re-creates the database for the script it's used in!  
+So for example, if you use this function in your gamemode, the database of the filterscript(s) will not be updated.  
 
 **Related functions/callbacks**  
 None
@@ -396,6 +399,7 @@ If no language was selected for the player, or if the player doesn't exist, it r
 **Related functions/callbacks**  
 * [Player_SetLanguage()](#player_setlanguage)
 * [Player_SelectLanguage()](#player_selectlanguage)
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)  
 
 [To index](#functions-and-callbacks)
 
@@ -417,6 +421,7 @@ None
 **Related functions/callbacks**  
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SelectLanguage()](#player_selectlanguage)
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)  
 
 [To index](#functions-and-callbacks)
 
@@ -439,6 +444,29 @@ After changing their language, `OnPlayerSelectLanguage()` is called.
 * [OnPlayerSelectLanguage()](#onplayerselectlanguage)
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SetLanguage()](#player_setlanguage)
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)
+
+[To index](#functions-and-callbacks)
+
+---
+#### Player_HasSelectedLanguage
+`bool:Player_HasSelectedLanguage(const playerid)`  
+Checks if a player has a language selected.  
+
+**Parameters**  
+`const playerid`: Player to check  
+
+**Returns**  
+(bool) **true**: Player selected a language | **false**: Player did not select a language, default language is currently shown to the player  
+
+**Notes**  
+None  
+
+**Related functions/callbacks**  
+* [OnPlayerSelectLanguage()](#onplayerselectlanguage)
+* [Player_GetLanguage()](#player_getlanguage)
+* [Player_SetLanguage()](#player_setlanguage)
+* [Player_SelectLanguage()](#player_selectlanguage)
 
 [To index](#functions-and-callbacks)
 
@@ -731,17 +759,20 @@ None
 
 ---
 #### OnPlayerSelectLanguage
-`OnPlayerSelectLanguage(playerid)`
+`OnPlayerSelectLanguage(playerid, response)`  
 Callback that is called after a player changed their language from the dialog
 
 **Parameters**  
-`playerid`: Player that changed their language
+`playerid`: Player that changed their language  
+`response`: Is either `0`: Player did not select a language, `1`: Player did select a language or `-1`: No dialog was shown, only one language available  
 
 **Notes**  
-<!> Only called when using `Player_SelectLanguage()`, not when `Player_SetLanguage()` was used.
+1: <!> Only called when using `Player_SelectLanguage()`, not when `Player_SetLanguage()` was used.  
+2: Using `if (response)` is sufficient if you just want to check if player language was set, since this will return true both for `1` and `-1`.  
 
 **Related functions/callbacks**  
-* [Player_SelectLanguage()](#player_selectlanguage)
+* [Player_SelectLanguage()](#player_selectlanguage)  
+* [Player_HasSelectedLanguage()](#player_hasselectedlanguage)
 
 [To index](#functions-and-callbacks)
 ---
