@@ -24,7 +24,7 @@
 #include <omp_language>
 
 /*-- Constants --*/
-#define DIALOG_LOGIN        (3) //2, because DIALOG_SELECT_LANGUAGE is already 1 (gamemodes) or 2 (filterscripts)
+#define DIALOG_LOGIN        (3) //3, because DIALOG_SELECT_LANGUAGE is already 1 (gamemodes) or 2 (filterscripts)
 #define MAX_FAILED_LOGINS   (5)
 
 /*-- Variables --*/
@@ -122,9 +122,6 @@ public OnPlayerConnect(playerid){
             SendClientMessage(i, -1, welcomeMessage[languageId]);
         }
     }
-    //Also note that omp_language doesn't reset the player's language by default
-    //This example gamemode does (see Player_SetLanguage() in OnPlayerDisconnect)
-    //Not doing so will result in showing this message to the joining player in the language of the last player with the same playerid (if any)
 
     Player_SelectLanguage(playerid);
     return 1;
@@ -154,7 +151,6 @@ public OnPlayerDisconnect(playerid, reason){
 
     PlayerTextDrawDestroy(playerid, spWelcomeTextDraw[playerid]);
     DestroyDeathLabel(playerid);
-    Player_SetLanguage(playerid, LANGUAGE_DEFAULT);
     spFailedLogins[playerid] = 0;
     spDeaths[playerid] = 0;
     return 1;

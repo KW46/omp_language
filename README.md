@@ -351,7 +351,9 @@ None
 (bool) **true**: Language database created. **false**: Directory "scriptfiles/languages" does not exist
 
 **Notes**  
-<!> Returns true if no languages were added (which happens if directory "scriptfiles/languages" is empty or doesn't have valid language directory names)
+1: <!> Returns true if no languages were added (which happens if directory "scriptfiles/languages" is empty or doesn't have valid language directory names)  
+2: When running multiple scripts (ie gamemode, and one or more filterscripts): Using this function only re-creates the database for the script it's used in!  
+So for example, if you use this function in your gamemode, the database of the filterscript(s) will not be updated.  
 
 **Related functions/callbacks**  
 None
