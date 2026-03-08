@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.07 - 2026/08/03
+* Features
+    * LanguageDB_BuildSingleTable() #36
+* Fixes
+    * Repeated colours sometimes not being converted #38
+    * YSI inclusion order #43
+    * Possible OOB/string overflow when replacing colours #37
+    * Possible colour mismatch #40
+* Misc
+    * If one file has multiple identifiers with the same name, last one is now used instead of the first one ...
+    * ... (This is a by-effect of #36 , ON CONFLICT DO UPDATE now used in INSERT query)
+
 ## v1.06 - 2026/02/20
 * Features
     * Sync player language between multiple scripts #28
