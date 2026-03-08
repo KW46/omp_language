@@ -326,7 +326,7 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
                         strdel(content, findPos, endPos);
                         strins(content, gLanguageColours[i][1], findPos);
                     }
-                    findPos += endPos;
+                    findPos += 7;
                 }
             }
         #endif
