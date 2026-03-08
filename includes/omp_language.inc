@@ -6,7 +6,7 @@
  *  \___/|_| |_| |_| .__/ |___| |_|\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
  *                 |_|                         |___/             |___/      
  *  
- !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.06) 
+ !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.07) 
  !  - Contributors:
         @NebulaGB (WookieLeaks) (#17)
         @itsneufox (newfox) (#21)
