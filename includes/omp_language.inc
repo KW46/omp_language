@@ -456,7 +456,7 @@ stock bool:Language_Exists(const string:search[])
 
 bool:LanguageDB_Build()
 {
-    //(Re-)builds the entire language database
+    //(Re-)builds the entire language database for the current script.
     //Returns: (bool) true: Succes | false: Fail (Directory "scriptfiles/languages" doesn't exist)
     //<!> Function will return true even if no languages exist
 
@@ -569,7 +569,7 @@ public __LanguageDB_BuildSingleTable(string:file[], string:subDir[], string:tabl
 
 stock void:LanguageDB_BuildSingleTable(const string:file[], const string:subDir[] = "")
 {
-    //(Re-)builds a single table
+    //(Re-)builds a single table for all running scripts.
     //  `file[]`: Full name of the file (including file extension)
     //  `subDir[]`: (optional) Directory the file is in. Ommit if it's in root dir.
             // `scriptfiles/languages/en_English/foo.txt` : LanguageDB_BuildSingleTable("foo.txt");
