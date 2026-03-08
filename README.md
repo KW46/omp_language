@@ -231,6 +231,7 @@ Yes.
 * [Language_GetIDFromData()](#language_getidfromdata)
 * [Language_Exists()](#language_exists)
 * [LanguageDB_Build()](#languagedb_build)
+* [LanguageDB_BuildSingleTable()](#languagedb_buildsingletable)
 * [Language_Get()](#language_get)
 * [Player_GetLanguage()](#player_getlanguage)
 * [Player_SetLanguage()](#player_setlanguage)
@@ -341,7 +342,7 @@ Case insensitive
 ---
 #### LanguageDB_Build
 `bool:LanguageDB_Build()`  
-Builds or rebuilds the language database.  
+Builds or rebuilds the entire language database for the current script.  
 Automatically used on script initialization. Can be used to rebuild the language database during runtime (in an admin command), useful if languages were modified.
 
 **Parameters**  
@@ -356,7 +357,34 @@ None
 So for example, if you use this function in your gamemode, the database of the filterscript(s) will not be updated.  
 
 **Related functions/callbacks**  
-None
+* [LanguageDB_BuildSingleTable()](#languagedb_buildsingletable)
+
+[To index](#functions-and-callbacks)
+
+---
+#### LanguageDB_BuildSingleTable
+`void:LanguageDB_BuildSingleTable(const string:file[], const string:subDir[] = "")`  
+(Re-)builds a single table for all running scripts.  
+
+**Parameters**  
+`const string:file[]`: Full filename to reload  
+`const string:subDir[]`: (optional) Sub-directory where the file is located
+
+**Returns**  
+(nothing)
+
+**Notes**  
+1: Only works for existing languages. If languages are added/removed/modified, use `LanguageDB_Build()` instead  
+2: If `LANGUAGE_NO_BUILD_MESSAGE` is not defined, it will print messages for each script (where said constant is not defined)  
+3: Useful if only one or just a few language files were modified. This is faster than reloading the entire database.  
+It does not matter if it is called from the gamemode or a filterscript.  
+So you could create an admin command that calls this function, or  `OnRconCommand()` (so you could reload it without having to go in-game, assuming (remote) RCON is enabled or you have console access).  
+
+The reason why this function uses `file` and `subDir` instead of `table` (eg `foo` or `global-foo`) is because all (or no) file extensions are allowed.  
+CBA to scan directories and check if there is a non-exact match (since files would have to be scanned twice then, since this function calls an internal function already used by `LanguageDB_Build()`).
+
+**Related functions/callbacks**  
+* [LanguageDB_Build()](#languagedb_build)
 
 [To index](#functions-and-callbacks)
 
