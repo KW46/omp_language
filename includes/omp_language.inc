@@ -298,14 +298,13 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
         if (sscanf(languageFileContent, sscanfSpecifier, identifier, content))
             continue;
 
-        if (strlen(content) > LANGUAGE_MAX_CONTENT_LENGTH)
-            PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH(%d)", tableName, identifier, LANGUAGE_MAX_CONTENT_LENGTH);
+        new len = strlen(content);
+        if (len > LANGUAGE_MAX_CONTENT_LENGTH)
+            PrintF("<!>[omp_language] Content length of `%s`:`%s` exceeds LANGUAGE_MAX_CONTENT_LENGTH "#LANGUAGE_MAX_CONTENT_LENGTH, tableName, identifier);
 
         //Strip "\n" (LF) or "\r\n" (CRLF) at end of line
         if (languageFileCurrentLine < languageFileLines)
         {
-            new len = strlen(content);
-
             if (content[len-1] == '\n' && content[len-2] == '\r')
                 content[len-2] = EOS;
             else
@@ -314,21 +313,45 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
 
         //Replace colour names with real colours, using variable gLanguageColours
         #if defined gLanguageColours
-            for (new i = 0; i < sizeof(gLanguageColours); i++)
+            new
+                bool:failure = false,
+                loopCount = 0
+            ;
+            do
             {
-                new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets, string appears to becomes empty
-
-                while ((findPos = strfind(content, gLanguageColours[i][0], false, findPos)) != -1)
+                for (new i = 0; i < sizeof(gLanguageColours); i++)
                 {
-                    new endPos = findPos + strlen(gLanguageColours[i][0]);
-                    if (content[findPos-1] == '{' && content[endPos] == '}')
+                    new findPos = 1; //Start at index 1: If content would start with a colour name but without brackets, string appears to becomes empty
+
+                    while ((findPos = strfind(content, gLanguageColours[i][0], false, findPos)) != -1)
                     {
-                        strdel(content, findPos, endPos);
-                        strins(content, gLanguageColours[i][1], findPos);
+                        new
+                            colourLen = strlen(gLanguageColours[i][0]),
+                            newLen = len - colourLen + 6
+                        ;
+                        if (newLen > LANGUAGE_MAX_CONTENT_LENGTH)
+                        {
+                            if (loopCount == 1)
+                                PrintF("<!>[omp_language] Cannot replace colour '%s' in `%s`:`%s` since that would exceed LANGUAGE_MAX_CONTENT_LENGTH "#LANGUAGE_MAX_CONTENT_LENGTH, gLanguageColours[i][0], tableName, identifier);
+                            findPos += colourLen;
+                            failure = true;
+                            continue;
+                        }
+                        new endPos = findPos + strlen(gLanguageColours[i][0]);
+                        if (content[findPos-1] == '{' && content[endPos] == '}')
+                        {
+                            strdel(content, findPos, endPos);
+                            strins(content, gLanguageColours[i][1], findPos);
+                        }
+                        findPos += 7;
+                        len = newLen;
                     }
-                    findPos += 7;
                 }
+                loopCount++;
+                if (!failure)
+                    loopCount = 2;
             }
+            while (loopCount < 2);
         #endif
         DB_FreeResultSet(DB_ExecuteQuery(sLanguageDBHandle, "INSERT INTO `%s` VALUES (%d, '%s', '%q');", tableName, languageId, identifier, content));
     }
