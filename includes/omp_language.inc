@@ -348,7 +348,7 @@ static void:Language_AddDataFromFile(const languageId, const string:file[], cons
             }
             while (loopCount < 2);
         #endif
-        DB_FreeResultSet(DB_ExecuteQuery(sLanguageDBHandle, "INSERT INTO `%s` VALUES (%d, '%s', '%q');", tableName, languageId, identifier, content));
+        DB_FreeResultSet(DB_ExecuteQuery(sLanguageDBHandle, "INSERT INTO `%s` VALUES (%d, '%s', '%q') ON CONFLICT (lang, ident) DO UPDATE SET CONTENT = '%q';", tableName, languageId, identifier, content, content));
     }
     fclose(languageFile);
 }
@@ -456,7 +456,7 @@ stock bool:Language_Exists(const string:search[])
 
 bool:LanguageDB_Build()
 {
-    //(Re-)builds the language database
+    //(Re-)builds the entire language database
     //Returns: (bool) true: Succes | false: Fail (Directory "scriptfiles/languages" doesn't exist)
     //<!> Function will return true even if no languages exist
 
@@ -528,6 +528,68 @@ bool:LanguageDB_Build()
         Print("===== Language database built =====");
     #endif
     return true;
+}
+
+forward __LanguageDB_BuildSingleTable(string:file[], string:subDir[], string:tableName[]);
+public __LanguageDB_BuildSingleTable(string:file[], string:subDir[], string:tableName[])
+{
+    #if !defined LANGUAGE_NO_BUILD_MESSAGE
+        new languageCount, buildCount;
+    #endif
+
+    for (new i = 0; i < LANGUAGES_MAX; i++)
+    {
+        if (!IsNull(sLanguages[i][E_LANG_CODE]))
+        {
+            #if !defined LANGUAGE_NO_BUILD_MESSAGE
+                languageCount++;
+            #endif
+
+            new fullPath[128];
+            format(fullPath, sizeof(fullPath), "languages/%s_%s/%s%s%s", sLanguages[i][E_LANG_CODE], sLanguages[i][E_LANG_NAME], subDir, (!IsNull(subDir) ? "/" : ""), file);
+
+            if (!fexist(fullPath))
+            {
+                PrintF("<!>[omp_language] Cannot (re-)build table `%s` for language `%s (%s)`:\n\tFile `%s` does not exist", tableName, sLanguages[i][E_LANG_NAME], sLanguages[i][E_LANG_CODE], fullPath);
+                continue;
+            }
+
+            Language_AddDataFromFile(i, file, subDir);
+            #if !defined LANGUAGE_NO_BUILD_MESSAGE
+                buildCount++;
+            #endif
+        }
+    }
+
+    #if !defined LANGUAGE_NO_BUILD_MESSAGE
+        if (buildCount == languageCount)
+            PrintF("[omp_language] Succesfully completed (re-)building table `%s`", tableName);
+    #endif
+}
+
+stock void:LanguageDB_BuildSingleTable(const string:file[], const string:subDir[] = "")
+{
+    //(Re-)builds a single table
+    //  `file[]`: Full name of the file (including file extension)
+    //  `subDir[]`: (optional) Directory the file is in. Ommit if it's in root dir.
+            // `scriptfiles/languages/en_English/foo.txt` : LanguageDB_BuildSingleTable("foo.txt");
+            // `scriptfiles/languages/en_English/global/foo.txt`: LanguageDB_BuildSingleTable("foo.txt", "global");
+    // Returns: (nothing)
+
+    new tableName[32];
+    format(tableName, sizeof(tableName), "%s%s%s", subDir, (!IsNull(subDir) ? "-" : ""), file);
+    for (new i = strlen(tableName); i > 0; i--)
+    {
+        if (tableName[i] == '.')
+        {
+            strdel(tableName, i, strlen(tableName));
+            break;
+        }
+    }
+    #if !defined LANGUAGE_NO_BUILD_MESSAGE
+        PrintF("[omp_language] (Re-)building table `%s`", tableName);
+    #endif
+    CallRemoteFunction("__LanguageDB_BuildSingleTable", "sss", file, subDir, tableName);
 }
 
 #if defined _INC_y_va
