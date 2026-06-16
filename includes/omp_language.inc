@@ -63,7 +63,7 @@
     #endif
     #if !defined _INC_md_sort
         #warning Failed to include md-sort.inc : Languages will not be sorted!
-        #define LANGUAGE_SORT_LANGUAGES(0)
+        #define LANGUAGE_SORT_LANGUAGES (0)
     #else
         #define LANGUAGE_SORT_LANGUAGES (1)
     #endif
