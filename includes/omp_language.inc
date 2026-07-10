@@ -98,7 +98,7 @@
 
 /*-- Macros/Constants --*/
 #if !defined SQLITE_INVALID_HANDLE
-    #define SQLITE_INVALID_HANDLE (DB:-1)
+    #define SQLITE_INVALID_HANDLE (DB:0)
 #endif
 #define LANGUAGE_INVALID_ID (-1)
 

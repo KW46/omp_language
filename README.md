@@ -66,7 +66,7 @@ That's all!
 
 `SQLITE_INVALID_HANDLE`  
 Since open.mp doesn't have a definition for this, it's added by this include.  
-Default value if not defined: `(DB:-1)`
+Default value if not defined: `(DB:0)`
 
 `LANGUAGE_MAX_CONTENT_LENGTH`  
 Defines the maximum allowed length of language strings.  
