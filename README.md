@@ -276,7 +276,7 @@ None
 
 ---
 #### Language_Default
-`String:Language_Default()`  
+`string:Language_Default()`  
 Retrieves server's default language  
 
 **Parameters**  
@@ -286,7 +286,7 @@ None
 (string) Default language of the server.  
 
 **Notes**  
-`LANGUAGE_DEFAULT` may not be the actual default value if that language doesn't exist.  
+`LANGUAGE_DEFAULT` may not be the actual default language if that language doesn't exist.  
 When that happens, default language becomes the first available language.  
 This function returns that language.  
 
