@@ -412,6 +412,9 @@ Language_Count()
     return count;
 }
 
+string:Language_Default()
+    return sDefaultLanguage;
+
 bool:Language_GetDataFromID(const languageId, string:languageCode[], string:languageName[], const lenLanguageCode = sizeof(languageCode), const lenLanguageName = sizeof(languageName))
 {
     //Gets language code and name from language ID.

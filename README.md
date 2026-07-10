@@ -227,6 +227,7 @@ Yes.
 ## Functions
 ### Functions and callbacks
 * [Language_Count()](#language_count)
+* [Language_Default()](#language_default)
 * [Language_GetDataFromID()](#language_getdatafromid)
 * [Language_GetIDFromData()](#language_getidfromdata)
 * [Language_Exists()](#language_exists)
@@ -270,6 +271,27 @@ None
 **Related functions/callbacks**  
 * [Language_GetDataFromID()](#language_getdatafromid)
 * [Language_GetIDFromData()](#language_getidfromdata)
+
+[To index](#functions-and-callbacks)
+
+---
+#### Language_Default
+`String:Language_Default()`  
+Retrieves server's default language  
+
+**Parameters**  
+None  
+
+**Returns**  
+(string) Default language of the server.  
+
+**Notes**  
+`LANGUAGE_DEFAULT` may not be the actual default value if that language doesn't exist.  
+When that happens, default language becomes the first available language.  
+This function returns that language.  
+
+**Related functions/callbacks**  
+None  
 
 [To index](#functions-and-callbacks)
 
