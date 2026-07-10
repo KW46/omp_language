@@ -170,7 +170,7 @@ static bool:Language_ScanLanguages()
 
     if (!dir_exists("scriptfiles/languages"))
     {
-        Print("[ERROR] Language system: Language directory doesn't exist!");
+        Print("[omp_language] ERROR: Language directory doesn't exist!");
         return false;
     }
 
@@ -193,12 +193,12 @@ static bool:Language_ScanLanguages()
         new langCode[3], langName[32];
         if (sscanf(dirItem, "p<_>s[3]s[32]", langCode, langName))
         {
-            PrintF("<!> Language system: Invalid directory name '%s' found in 'scriptfiles/languages'!", dirItem);
+            PrintF("<!>[omp_language]: Invalid directory name '%s' found in 'scriptfiles/languages'!", dirItem);
             continue;
         }
         if (languagesAdded >= LANGUAGES_MAX)
         {
-            PrintF("<!> Language system: Cannot add language %s(%s): Maximum languages (%d) reached!", langName, langCode, LANGUAGES_MAX);
+            PrintF("<!>[omp_language]: Cannot add language %s(%s): Maximum languages (%d) reached!", langName, langCode, LANGUAGES_MAX);
             continue; //Print a warning for every language that's not added
         }
 
