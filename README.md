@@ -145,7 +145,7 @@ Default value if not defined: `SORT_ASC`
 [To index](#how-to-use)
 
 ### Embedded colour names
-The language files are added in run-time and therefor macros (eg `COL_RED`) can't be used.  
+The language files are added in run-time and therefore macros (eg `COL_RED`) can't be used.  
 Since it would be very inconvenient to use hexadecimal numbers all the time, this language system allows using colour names.  
 There is a default set of language colours, included in file `includes/omp_language_colours.inc`. This creates a constant array called `gLanguageColours`.  
 You can simply use these colours, or define the array yourself before including omp_language.  
@@ -173,12 +173,12 @@ scriptfiles/
 To retrieve a string from `global.txt` you would use `"global"`. To retrieve one from `admin.txt` inside the `command` directory, you would use `"command-admin"`.  
 <!> Only one sub-directory is supported, creating another directory inside a sub-directory (in this case, `command`) will not work: Those files will not be added.
 
-To add strings to a language file, simply create an identifier, and then the string attached to that identifier. Use a space (or preferably one or more tabs) to seperate those two.  
+To add strings to a language file, simply create an identifier, and then the string attached to that identifier. Use a space (or preferably one or more tabs) to separate those two.  
 <!> Empty lines and lines starting with `#` are ignored. As are invalid lines (single words)
 For example:
 ```
 ## This line is ignored and thus functions as a comment.
-# This is the prefered way of adding entries: Identifier fully capitalized, using words and underscores only, identating all strings on the same column (? did I call that right ?)
+# This is the preferred way of adding entries: Identifier fully capitalized, using words and underscores only, identating all strings on the same column (? did I call that right ?)
 MY_IDENTIFIER       This is my identifier!
 HELLO_WORLD         Hello {GREEN}world!
 
@@ -299,7 +299,7 @@ None
 
 ---
 #### Language_GetIDFromData
-`Language_GetIDFromData(const string:search[])`
+`Language_GetIDFromData(const string:search[])`  
 Gets the language ID by looking up language code or language name.
 
 **Parameters**  
@@ -624,7 +624,7 @@ Creates a player-textdraw using the language system
 `Float:y`: Y-coordinate  
 `table[]`: Table to get the content from  
 `identifier[]`: Identifier from given table to retrieve  
-`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
 PlayerText:The ID of the created textdraw
@@ -648,7 +648,7 @@ Sets a player-textdraw string using the language system
 `textid`:  The PlayerTextDraw to set the string for  
 `table[]`: Table to get the content from  
 `identifier[]`: Identifier from given table to retrieve  
-`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
 Always returns 1
@@ -672,7 +672,7 @@ Sets a textdraw string for a specific player using the language system
 `textid`: The TextDraw to set the string for  
 `table[]`: Table to get the content from  
 `identifier[]`: Identifier from given table to retrieve  
-`OPEN_MP_TAGS:`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
+`OPEN_MP_TAGS:...`: (optional) Used for formatting the string if format specifiers were used. Only works when using YSI
 
 **Returns**  
 Always returns 1
@@ -743,7 +743,7 @@ Creates a 3D text label for a specific player using the language system
 `colour`: The text colour  
 `Float:x`: X coordinate (or offset if attached)  
 `Float:y`: Y coordinate (or offset if attached)  
-`Float:z`: Z coordinate (or offest if attached)  
+`Float:z`: Z coordinate (or offset if attached)  
 `Float:drawDistance`: The distance where you are able to see the 3D Text Label  
 `parentPlayerid`: (optional) The player you want to attach the 3D Text Label to (None (and default): INVALID_PLAYER_ID)  
 `parentVehicleid`: (optional) The vehicle you want to attach the 3D Text Label to (None (and default): INVALID_VEHICLE_ID)  

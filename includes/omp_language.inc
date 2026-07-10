@@ -457,7 +457,7 @@ stock bool:Language_Exists(const string:search[])
 bool:LanguageDB_Build()
 {
     //(Re-)builds the entire language database for the current script.
-    //Returns: (bool) true: Succes | false: Fail (Directory "scriptfiles/languages" doesn't exist)
+    //Returns: (bool) true: Success | false: Fail (Directory "scriptfiles/languages" doesn't exist)
     //<!> Function will return true even if no languages exist
 
     #if !defined LANGUAGE_NO_BUILD_MESSAGE
@@ -563,7 +563,7 @@ public __LanguageDB_BuildSingleTable(string:file[], string:subDir[], string:tabl
 
     #if !defined LANGUAGE_NO_BUILD_MESSAGE
         if (buildCount == languageCount)
-            PrintF("[omp_language] Succesfully completed (re-)building table `%s`", tableName);
+            PrintF("[omp_language] Successfully completed (re-)building table `%s`", tableName);
     #endif
 }
 
@@ -967,7 +967,7 @@ stock string:Player_GetLanguage(const playerid)
     //  `colour`: The text colour
     //  `Float:x`: X coordinate (or offset if attached)
     //  `Float:y`: Y coordinate (or offset if attached)
-    //  `Float:z`: Z coordinate (or offest if attached)
+    //  `Float:z`: Z coordinate (or offset if attached)
     //  `Float:drawDistance`: The distance where you are able to see the 3D Text Label
     //  `parentPlayerid`: The player you want to attach the 3D Text Label to (None: INVALID_PLAYER_ID)
     //  `parentVehicleid`: The vehicle you want to attach the 3D Text Label to (None: INVALID_VEHICLE_ID)
