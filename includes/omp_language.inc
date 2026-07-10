@@ -6,10 +6,11 @@
  *  \___/|_| |_| |_| .__/ |___| |_|\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
  *                 |_|                         |___/             |___/      
  *  
- !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.07) 
+ !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.08) 
  !  - Contributors:
         @NebulaGB (WookieLeaks) (#17)
         @itsneufox (newfox) (#21)
+        @Trysha-rbrn (#50, #52, #54)
  */
 
 
@@ -98,7 +99,7 @@
 
 /*-- Macros/Constants --*/
 #if !defined SQLITE_INVALID_HANDLE
-    #define SQLITE_INVALID_HANDLE (DB:-1)
+    #define SQLITE_INVALID_HANDLE (DB:0)
 #endif
 #define LANGUAGE_INVALID_ID (-1)
 
@@ -411,6 +412,9 @@ Language_Count()
     return count;
 }
 
+stock string:Language_Default()
+    return sDefaultLanguage;
+
 bool:Language_GetDataFromID(const languageId, string:languageCode[], string:languageName[], const lenLanguageCode = sizeof(languageCode), const lenLanguageName = sizeof(languageName))
 {
     //Gets language code and name from language ID.
@@ -457,7 +461,7 @@ stock bool:Language_Exists(const string:search[])
 bool:LanguageDB_Build()
 {
     //(Re-)builds the entire language database for the current script.
-    //Returns: (bool) true: Succes | false: Fail (Directory "scriptfiles/languages" doesn't exist)
+    //Returns: (bool) true: Success | false: Fail (Directory "scriptfiles/languages" doesn't exist)
     //<!> Function will return true even if no languages exist
 
     #if !defined LANGUAGE_NO_BUILD_MESSAGE
@@ -563,7 +567,7 @@ public __LanguageDB_BuildSingleTable(string:file[], string:subDir[], string:tabl
 
     #if !defined LANGUAGE_NO_BUILD_MESSAGE
         if (buildCount == languageCount)
-            PrintF("[omp_language] Succesfully completed (re-)building table `%s`", tableName);
+            PrintF("[omp_language] Successfully completed (re-)building table `%s`", tableName);
     #endif
 }
 
@@ -967,7 +971,7 @@ stock string:Player_GetLanguage(const playerid)
     //  `colour`: The text colour
     //  `Float:x`: X coordinate (or offset if attached)
     //  `Float:y`: Y coordinate (or offset if attached)
-    //  `Float:z`: Z coordinate (or offest if attached)
+    //  `Float:z`: Z coordinate (or offset if attached)
     //  `Float:drawDistance`: The distance where you are able to see the 3D Text Label
     //  `parentPlayerid`: The player you want to attach the 3D Text Label to (None: INVALID_PLAYER_ID)
     //  `parentVehicleid`: The vehicle you want to attach the 3D Text Label to (None: INVALID_VEHICLE_ID)
