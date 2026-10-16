@@ -6,7 +6,7 @@
  *  \___/|_| |_| |_| .__/ |___| |_|\__,_|_| |_|\__, |\__,_|\__,_|\__, |\___|
  *                 |_|                         |___/             |___/      
  *  
- !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.08) 
+ !  - omp_language include created and maintained by @KW46 (Kwarde) (https://github.com/KW46) (v1.09) 
  !  - Contributors:
         @NebulaGB (WookieLeaks) (#17)
         @itsneufox (newfox) (#21)
@@ -29,7 +29,10 @@
 /*-- Includes --*/
 #include <open.mp>
 #include <sscanf2>
-#include <FileManager>
+#tryinclude <FileManager>
+#if !defined _file_manager_included
+    #include <filemanager>
+#endif
 
 #if !defined LANGUAGE_NO_YSI
     #if !defined LANGUAGE_NO_YSI_DIALOG

@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.09 - 2026/10/16
+* Fixes
+    * Proper filemanager inclusion #56
+
+## v1.08 - 2026/07/10
+* Features
+    * Language_Default()
+* Fixes
+    * Missing space between macro definition+value (LANGUAGE_SORT_LANGUAGES) #47
+* Misc
+    * Improved logs (Always use `[omp_language]`) #48
+    * Improved grammar in documentation #54
+    * SQLITE_INVALID_HANDLE now defaults to `(DB:0)` #53
+
 ## v1.07 - 2026/08/03
 * Features
     * LanguageDB_BuildSingleTable() #36
