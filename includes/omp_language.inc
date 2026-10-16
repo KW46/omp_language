@@ -29,7 +29,10 @@
 /*-- Includes --*/
 #include <open.mp>
 #include <sscanf2>
-#include <FileManager>
+#tryinclude <FileManager>
+#if !defined _file_manager_included
+    #include <filemanager>
+#endif
 
 #if !defined LANGUAGE_NO_YSI
     #if !defined LANGUAGE_NO_YSI_DIALOG
